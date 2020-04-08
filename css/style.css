@@ -1,3 +1,113 @@
+
+* {
+    box-sizing: border-box;
+}
+
+/*---------Font Family-------------*/
+
+@font-face {
+    font-family: impact;
+    src: url(../fonts/impact/impact.ttf)
+}
+
+
+ /* BASICS */
+
 body {
     background-color: beige;
 }
+
+canvas {
+    border: 1px solid black;
+    display: block;
+    margin: 0 auto;
+}
+
+
+ /* Containers */
+
+
+.canvas-container {
+    margin: 0 auto;
+    width: 400px;
+    height: 400px;
+}
+
+
+ /* Images Gallery */
+
+ .images-gallery img {
+     height: 300px;
+     width: 300px;
+ }
+
+
+
+
+
+ /* Helpers */
+
+ /* flex-helpers */
+
+ .flex {
+    display: flex;
+}
+
+.flex.column {
+    flex-direction: column;
+}
+
+.flex.justify-center {
+    justify-content: center;
+}
+
+.flex.space-between {
+    justify-content: space-between;
+}
+
+.flex.space-around {
+    justify-content: space-around;
+}
+
+.flex.flex-start {
+    justify-content: flex-start;
+}
+
+.flex.flex-end {
+    justify-content: flex-end;
+}
+
+
+.flex.align-center {
+    align-items: center;
+}
+
+.flex.flex-grow {
+    flex-grow: 1;
+}
+
+.flex.wrap {
+    flex-wrap: wrap;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+
+/* List helpers */
+
+.clean-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ 
+
+
+
+
