@@ -19,8 +19,9 @@ var gMeme = {
         {
             lineID: 1,
             text:'bla',
-            align:'c',
-            color:'black'
+            alignType:'center',
+            color:'black',
+            fontSize:30
         }
     ]
 }
@@ -37,11 +38,24 @@ function getMeme() {
     return gMeme
 }
 
-function getMemeLines() {
-    return gMeme.lines
+function getFontSize() {
+    return  gMeme.lines[gMeme.selectedLineIdx].fontSize 
+}
+
+function updateMemeLineText(text) {
+    gMeme.lines[gMeme.selectedLineIdx].text = text
+}
+
+function updateLineFontSize(delta) {
+    gMeme.lines[gMeme.selectedLineIdx].fontSize += delta
+}
+
+function updateLineAlignment(alignType) {
+    gMeme.lines[gMeme.selectedLineIdx].alignType = alignType
 }
 
 
-function updateMemeLine(text) {
-    gMeme.lines[gMeme.selectedLineIdx].text = text
+function clearCurrMeme() {
+    gMeme.lines[0].text ='' 
+
 }

@@ -22,10 +22,15 @@ function resizeCanvas() {
 
 
 function onSelectImg(elImg, imgId) {
+    const meme = getMeme()
     clearCanvas()
+    clearCurrMeme()
+    // document.querySelector('.input-line').value = '';
     setMeme(imgId)
-    renderMeme(elImg, imgId)
+    renderInputs(meme)
+    renderMeme(elImg)
 }
+
 
 function renderMeme(elImg) {
     const meme = getMeme()
@@ -36,11 +41,15 @@ function renderMeme(elImg) {
     });
 }
 
-function drawText(text, x = 50, y = 50) {
-    gCtx.font = '40px Ariel'
-    // gCtx.textAlign = 'center'
-    gCtx.fillText(text, x, y)
-    gCtx.strokeText(text, x, y)
+function drawText(text, x = gCanvas.width / 2, y = 50) {
+    const meme = getMeme()
+    const line = meme.lines[meme.selectedLineIdx]
+    const fontSize = line.fontSize
+    const alignType = line.alignType
+    gCtx.font = fontSize + 'px impact'
+    gCtx.textAlign = alignType
+    gCtx.fillText(text, x, y, gCanvas.width)
+    gCtx.strokeText(text, x, y, gCanvas.width)
 }
 
 function renderGallery() {
@@ -61,8 +70,42 @@ function clearCanvas() {
 }
 
 function onUpdateLine(elText) {
-    updateMemeLine(elText.value)
     const meme = getMeme()
     const elImg = document.querySelector(`[data-img-id="${meme.selectedImgID}"]`)
+    updateMemeLineText(elText.value)
     renderMeme(elImg)
+}
+
+
+function onChangeFontSize(sizeDelta) {
+    const meme = getMeme()
+    const elImg = document.querySelector(`[data-img-id="${meme.selectedImgID}"]`)
+    updateLineFontSize(sizeDelta)
+    renderMeme(elImg)
+}
+
+function onChangeAlignment(alignType) {
+    const meme = getMeme()
+    const elImg = document.querySelector(`[data-img-id="${meme.selectedImgID}"]`)
+    updateLineAlignment(alignType)
+    renderMeme(elImg)
+}
+
+
+function onAddLine() {
+    renderInput()
+}
+
+function onSwithchLine() {
+
+}
+
+function renderInputs(meme) {
+    const lines = meme.lines
+    var strHtmls = lines.map(getInputsHTML)
+    document.querySelector('.text-inputs-content').innerHTML = strHtmls.join('')
+}
+
+function getInputsHTML(line, idx) {
+    return `<input class="input-line" type=text onkeyup="onUpdateLine(this)"></input>`
 }

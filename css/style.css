@@ -18,6 +18,7 @@ body {
 }
 
 canvas {
+    font-family: impact;
     border: 1px solid black;
     display: block;
     margin: 0 auto;
@@ -42,6 +43,13 @@ canvas {
  }
 
 
+  /* Control Panel */
+
+  .icon {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+  }
 
 
 
