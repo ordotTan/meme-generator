@@ -6,7 +6,7 @@
 /*---------Font Family-------------*/
 
 @font-face {
-    font-family: impact;
+    font-family: Impact;
     src: url(../fonts/impact/impact.ttf)
 }
 
@@ -18,10 +18,14 @@ body {
 }
 
 canvas {
-    font-family: impact;
+    font-family: Impact;
     border: 1px solid black;
     display: block;
     margin: 0 auto;
+}
+
+a {
+    text-decoration: none;
 }
 
 
@@ -30,8 +34,15 @@ canvas {
 
 .canvas-container {
     margin: 0 auto;
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
+}
+
+ /* Search/Filter Panel */
+
+ .keywords-content li {
+    margin-right: 10px;
+    cursor: pointer;
 }
 
 
@@ -40,6 +51,7 @@ canvas {
  .images-gallery img {
      height: 300px;
      width: 300px;
+     cursor: pointer;
  }
 
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,40 +8,77 @@
     <title>Meme Generator</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body onload="onInit()">
 
-    <div class="canvas-container">
-        <canvas id="my-canvas" height="300" width="300" 
-        onmousedown="" 
-        onmousemove=""  
-        onmouseup="" 
-        ontouchstart="" 
-        ontouchend="" 
-        ontouchmove="">
-        </canvas>
+<body onload="onInit()" onkeydown="onMoveLineKeyboard(event,3)">
+
+    <div class="meme-editor" hidden>
+        <section class="canvas-container" >
+            <canvas id="my-canvas" height="600" width="600" onclick="onCanvasClicked(event)" onmousedown=""
+                onmousemove="" onmouseup="" ontouchstart="" ontouchend="" ontouchmove="">
+            </canvas>
+        </section>
+
+        <section class="control-panel">
+            <input class="input-line" type="text" onkeyup="onUpdateLine(this)"></input>
+            <img class="icon" src="img/increase_font.png" onclick="onChangeFontSize(1)">
+            <img class="icon" src="img/decrease_font.png" onclick="onChangeFontSize(-1)">
+            <img class="icon" src="img/align-to-left.png" onclick="onChangeAlignment('left')">
+            <img class="icon" src="img/align-to-center.png" onclick="onChangeAlignment('center')">
+            <img class="icon" src="img/align-to-right.png" onclick="onChangeAlignment('right')">
+            <img class="icon" src="img/addLine.png" onclick="onAddLine()">
+            <img class="icon" src="img/trash.png" onclick="onRemoveLine()">
+            <img class="icon" src="img/switchLine.png" onclick="onSwitchLine()">
+            <img class="icon" src="img/up_arrow.png" onclick="onMoveLine(-5)">
+            <img class="icon" src="img/down_arrow.png" onclick="onMoveLine(5)">
+
+            <select class="font-selector" onChange="onChangeFont(this)">
+                <option value="Impact" selected>Impact</option>
+                <option value="Ariel">Ariel</option>
+            </select>
+            <div>
+                <label for="lineColor">Stroke</label>
+                <input class="line-color-picker" type="color" name="lineColor" value="#000000">
+            </div>
+
+            <div>
+                <label for="fontColor">Font</label>
+                <input class="font-color-picker" type="color" name="fontColor" value="#FFFFFF">
+            </div>
+
+        </section>
+
+        <section>
+            <form action="" method="POST" enctype="multipart/form-data" onsubmit="onUploadImg(this, event)">
+                <input name="img" id="imgData" type="hidden" />
+                <button class="btn" type="submit">Publish</button>
+                <a class="btn" href="#" onclick="onDownloadCanvas(this)" download="">Download</a>
+                <div class="share-container"></div>
+            </form>
+        </section>
     </div>
 
-    <div class="control-panel">
-        <input class="input-line" type="text" onkeyup="onUpdateLine(this)"></input>`
-        <img class="icon" src="img/increase_font.png" onclick="onChangeFontSize(1)">
-        <img class="icon" src="img/decrease_font.png" onclick="onChangeFontSize(-1)">
-        <img class="icon" src="img/align-to-left.png" onclick="onChangeAlignment('left')">
-        <img class="icon" src="img/align-to-center.png" onclick="onChangeAlignment('center')">
-        <img class="icon" src="img/align-to-right.png" onclick="onChangeAlignment('right')">
-        <img class="icon" src="img/addLine.png" onclick="onAddLine()">
-        <img class="icon" src="img/trash.png" onclick="onRemoveLine()">
-        <img class="icon" src="img/switchLine.png" onclick="onSwitchLine()">
+
+
+    <div class="images-container">
+        <input class="search-input" list="recent_searches" type="text" onkeyup="onSearchGallery(this)"></input>
+        <div class="keywords-content" style="font-size:100px;"></div>
+        <datalist id="recent_searches">
+            <option value="funny" label="funny" />
+            <option value="happy" label="happy" />
+            <option value="sad" label="sad" />
+        </datalist>
+        <section class="images-gallery flex justify-center">
+            <div class="images-content"></div>
+        </section>
 
     </div>
 
-    <div class="images-gallery flex justify-center">
-        <div class="images-content"></div>
-    </div>
 
-
-    
+    <script src="js/util.js"></script>
+    <script src='js/upload-service.js'></script>
     <script src="js/storage-service.js"></script>
     <script src="js/memegen-controller.js"></script>
     <script src="js/memegen-service.js"></script>
 </body>
+
 </html>
