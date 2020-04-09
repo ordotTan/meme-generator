@@ -25,9 +25,7 @@ function onSelectImg(elImg, imgId) {
     const meme = getMeme()
     clearCanvas()
     clearCurrMeme()
-    // document.querySelector('.input-line').value = '';
     setMeme(imgId)
-    renderInputs(meme)
     renderMeme(elImg)
 }
 
@@ -36,20 +34,45 @@ function renderMeme(elImg) {
     const meme = getMeme()
     const lines = meme.lines
     gCtx.drawImage(elImg, 0, 0, gCanvas.width, gCanvas.height);
+    const markedLine = meme.selectedLineIdx
     lines.forEach(line => {
-        drawText(line.text)
+        drawTextBox(line, markedLine)
+        drawText(line)
     });
 }
 
-function drawText(text, x = gCanvas.width / 2, y = 50) {
-    const meme = getMeme()
-    const line = meme.lines[meme.selectedLineIdx]
+function drawTextBox(line, markedLine) {
+    if (line.index === markedLine) {
+        gCtx.strokeStyle = 'red'
+        document.querySelector('.input-line').value=line.text;
+    }
+    else  {
+        gCtx.strokeStyle = 'white'
+    }
+    gCtx.beginPath()
+    gCtx.lineWidth = '2'
+    gCtx.rect(10, line.height, gCanvas.width - 20, line.fontSize*1.2)
+    gCtx.stroke()
+    gCtx.closePath()
+}
+
+
+function drawText(line, x) {
+
+    const height = line.height+line.fontSize 
+    const text = line.text
     const fontSize = line.fontSize
     const alignType = line.alignType
     gCtx.font = fontSize + 'px impact'
+    gCtx.lineWidth = '1'
+    gCtx.strokeStyle = 'black'
     gCtx.textAlign = alignType
-    gCtx.fillText(text, x, y, gCanvas.width)
-    gCtx.strokeText(text, x, y, gCanvas.width)
+    if (alignType === 'left') x = 20
+    else if (alignType === 'right') x = gCanvas.width - 20
+    else x = gCanvas.width / 2
+    gCtx.fillText(text, x, height)
+    gCtx.strokeText(text, x, height)
+
 }
 
 function renderGallery() {
@@ -62,7 +85,6 @@ function renderGallery() {
 function getImgHTML(image, idx) {
     return `<img data-img-id="${idx + 1}" src="img/${idx + 1}.jpg" onclick="onSelectImg(this,${idx + 1})">`
 }
-
 
 function clearCanvas() {
     gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height)
@@ -93,19 +115,24 @@ function onChangeAlignment(alignType) {
 
 
 function onAddLine() {
-    renderInput()
+    const meme = getMeme()
+    const elImg = document.querySelector(`[data-img-id="${meme.selectedImgID}"]`)
+    addLine()
+    document.querySelector('.input-line').value=''
+    renderMeme(elImg)
 }
 
-function onSwithchLine() {
-
+function onRemoveLine() {
+    const meme = getMeme()
+    const elImg = document.querySelector(`[data-img-id="${meme.selectedImgID}"]`)
+    removeLine()
+    renderMeme(elImg)
 }
 
-function renderInputs(meme) {
-    const lines = meme.lines
-    var strHtmls = lines.map(getInputsHTML)
-    document.querySelector('.text-inputs-content').innerHTML = strHtmls.join('')
-}
-
-function getInputsHTML(line, idx) {
-    return `<input class="input-line" type=text onkeyup="onUpdateLine(this)"></input>`
+function onSwitchLine() {
+    const meme = getMeme()
+    const elImg = document.querySelector(`[data-img-id="${meme.selectedImgID}"]`)
+    const activeLine = switchLine()
+    document.querySelector('.input-line').value=activeLine.text;
+    renderMeme(elImg)
 }

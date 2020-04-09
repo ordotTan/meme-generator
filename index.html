@@ -21,23 +21,17 @@
     </div>
 
     <div class="control-panel">
-        <div class='text-inputs'>
-            <div class='text-inputs-content'>
-                <!-- Change Text:<input class="input-line" type=text onkeyup="onUpdateLine(this)"> -->
-            </div>
-        </div>
-        
+        <input class="input-line" type="text" onkeyup="onUpdateLine(this)"></input>`
         <img class="icon" src="img/increase_font.png" onclick="onChangeFontSize(1)">
         <img class="icon" src="img/decrease_font.png" onclick="onChangeFontSize(-1)">
-        <img class="icon" src="img/align-to-left.png" onclick="onChangeAlignment('right')">
+        <img class="icon" src="img/align-to-left.png" onclick="onChangeAlignment('left')">
         <img class="icon" src="img/align-to-center.png" onclick="onChangeAlignment('center')">
-        <img class="icon" src="img/align-to-right.png" onclick="onChangeAlignment('left')">
+        <img class="icon" src="img/align-to-right.png" onclick="onChangeAlignment('right')">
         <img class="icon" src="img/addLine.png" onclick="onAddLine()">
+        <img class="icon" src="img/trash.png" onclick="onRemoveLine()">
         <img class="icon" src="img/switchLine.png" onclick="onSwitchLine()">
 
     </div>
-
-
 
     <div class="images-gallery flex justify-center">
         <div class="images-content"></div>
