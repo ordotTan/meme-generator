@@ -53,10 +53,12 @@ function setSearchText(searchText) {
     gSearchText = searchText
 }
 
-function setMeme(imgId,elImg) {
+function setMeme(fileType,imgId,elImg) {
+    gMeme.fileType = fileType
     gMeme.elImg = elImg
     gMeme.selectedImgID = imgId
     gMeme.selectedLineIdx = 0
+    // if (fileType==='external') gMeme.origImgURL = elImg
 }
 
 function setMemeFromSavedList(meme,memeId) {
@@ -83,6 +85,9 @@ function updateLineFontSize(delta) {
 }
 
 function updateLineAlignment(alignType) {
+    if (alignType === 'left') gMeme.lines[gMeme.selectedLineIdx].xLoc =  20
+    else if (alignType === 'right') gMeme.lines[gMeme.selectedLineIdx].xLoc  = gCanvas.width - 20
+    else if (alignType === 'center') gMeme.lines[gMeme.selectedLineIdx].xLoc  = gCanvas.width / 2
     gMeme.lines[gMeme.selectedLineIdx].alignType = alignType
 }
 
@@ -99,22 +104,23 @@ function addLine() {
     let lineId
     let y
     if (!gMeme.lines) { lineId = 1 } else lineId = gMeme.maxId++
-    switch (gMeme.lines.length) {  //for the box location... 
+    switch (gMeme.lines.length) {  //for the text-boxes location... 
         case 0:  //top 
-            y = 10;
+            y = 20;
             break;
         case 1:
             y = gCanvas.height - 60    //bottom 
             break;
         default:
-            y = (gCanvas.height - 65) / 2; // middle
+            y = (gCanvas.height - 30) / 2; // middle
             break;
     }
     const line = {
         id: lineId,
         index: gMeme.lines.length,
-        height: y,
-        text: 'Your text goes here',
+        xLoc: gCanvas.width/2,
+        yLoc: y,
+        text: 'Text',
         alignType: 'center',
         strokeColor: 'black',
         fontColor: 'white',
@@ -162,16 +168,7 @@ function setFontColor(color) {
 }
 
 function setLineHeight(delta) {
-    gMeme.lines[gMeme.selectedLineIdx].height += delta
-}
-
-
-function setLineHeightKeyboard(ev, delta) {
-    if (ev.key === "ArrowDown")
-        gMeme.lines[gMeme.selectedLineIdx].height += delta
-    else if (ev.key === "ArrowUp")
-        gMeme.lines[gMeme.selectedLineIdx].height -= delta
-
+    gMeme.lines[gMeme.selectedLineIdx].yLoc += delta
 }
 
 function updateKeywordCount(imgId) {
@@ -191,7 +188,7 @@ function getKeywords() {
 
 function saveMeme(meme,isOverwrite) {
     const memeId = meme.memeId
-    meme.memeHTML = gMeme
+    meme.meme = gMeme
     saveToStorage(memeId,meme)
     if (!isOverwrite) {
         gSavedMemes.push(memeId)

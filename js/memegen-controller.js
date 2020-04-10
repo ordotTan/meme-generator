@@ -4,6 +4,8 @@ var gCanvas;
 var gCtx;
 var gDraggedLine
 
+var gImg
+
 function onInit() {
     gCanvas = document.querySelector('#my-canvas');
     // resizeCanvas()
@@ -32,7 +34,7 @@ function resizeCanvas() {
 function onSelectImg(elImg, imgId) {
     document.querySelector('.meme-editor').hidden = false;
     document.querySelector('.images-container').style.display = 'none';
-    setMeme(imgId, elImg)
+    setMeme('internal', imgId, elImg)
     clearCanvas()
     resetMeme()
     updateKeywordCount(imgId)
@@ -41,11 +43,17 @@ function onSelectImg(elImg, imgId) {
 }
 
 
-function renderMeme(forExternalUse = false) {
 
+function renderMeme(forExternalUse = false) {
     const meme = getMeme()
     const lines = meme.lines
-    gCtx.drawImage(meme.elImg, 0, 0, gCanvas.width, gCanvas.height);
+    if (meme.fileType === 'internal') {
+        gCtx.drawImage(meme.elImg, 0, 0, gCanvas.width, gCanvas.height);
+    }
+    else {
+        // console.log('before:',meme.elImg) //todo need to remove?
+        gCtx.drawImage(meme.elImg, 0, 0, gCanvas.width, gCanvas.height);
+    }
     const markedLine = meme.selectedLineIdx
     lines.forEach(line => {
         if (!forExternalUse) drawTextBox(line, markedLine)
@@ -64,15 +72,18 @@ function drawTextBox(line, markedLine) {
     }
     gCtx.beginPath()
     gCtx.lineWidth = '2'
-    gCtx.rect(10, line.height, gCanvas.width - 20, line.fontSize * 1.2)
+    //gCtx.rect(line.xLoc, line.yLoc, gCanvas.width - 20, line.fontSize * 1.2)
+    gCtx.rect(10, line.yLoc, gCanvas.width - 20, line.fontSize * 1.2)
+    // was gCtx.rect(10
     gCtx.stroke()
     gCtx.closePath()
 }
 
 
 function drawText(line) {
-    var startX
-    const height = line.height + line.fontSize
+    // debugger
+    const startX = line.xLoc
+    const height = line.yLoc + line.fontSize
     const text = line.text
     const fontSize = line.fontSize
     const alignType = line.alignType
@@ -82,12 +93,8 @@ function drawText(line) {
     gCtx.strokeStyle = line.strokeColor
     gCtx.fillStyle = line.fontColor
     gCtx.font = fontSize + 'px ' + fontFamily
-
-
     gCtx.textAlign = alignType
-    if (alignType === 'left') startX = 20
-    else if (alignType === 'right') startX = gCanvas.width - 20
-    else startX = gCanvas.width / 2
+
     gCtx.fillText(text.toUpperCase(), startX, height)
     gCtx.strokeText(text.toUpperCase(), startX, height)
 
@@ -174,25 +181,6 @@ function onMoveLine(delta) {
     renderMeme()
 }
 
-function onMoveLineKeyboard(ev, delta) {
-    // ev.preventDefault()
-    const meme = getMeme()
-    if (meme.selectedLineIdx || meme.selectedLineIdx === 0) {
-        setLineHeightKeyboard(ev, delta)
-        renderMeme()
-    }
-
-}
-
-
-function onCanvasClick(ev) {
-    const line = isOnLine(ev.offsetX, ev.offsetY)
-    if (!line) return
-    gMeme.selectedLineIdx = line.index
-    document.querySelector('.input-line').value = line.text;
-    document.querySelector('.font-selector').value = line.fontFamily
-    renderMeme()
-}
 
 function onSearchGallery(elInput) {
     document.querySelector('.images-content').innerHTML = '';
@@ -242,17 +230,17 @@ function onFilterGallery(elKeyword) {
 function onSaveMeme() {
     var isOverwrite = false
     const meme = getMeme()
+    //const origImgURL = meme.originalImgURL
     var dataURL = gCanvas.toDataURL();
     if (!meme.memeId) {
-        var memeId = makeId(6)//prompt('Name?') //todo open modal to get name input
+        var memeId = makeId(6)
     }
     else {
-        //todo open confimration modal for overwrite
         const meme = getMeme()
         var memeId = meme.memeId
         isOverwrite = true
     }
-    const memeData = { memeId: memeId, imgURL: dataURL } //todo!!!
+    const memeData = { memeId: memeId, imgURL: dataURL }
     saveMeme(memeData, isOverwrite)
     renderSavedMemesList()
     renderDeleteButton(memeId)
@@ -268,7 +256,6 @@ function renderSavedMemesList1() {
     memes.forEach(meme => {
         strHTML += `<li onclick="onShowMeme(this)">${meme}</li>`
     })
-
     strHTML += '</ul>'
     document.querySelector('.saved-memes-content').innerHTML = strHTML
 }
@@ -287,13 +274,26 @@ function renderSavedMemesList() {
 }
 
 function onShowMeme(memeId) {
+    // debugger
     document.querySelector('.meme-editor').hidden = false;
     document.querySelector('.images-container').style.display = 'none';
-    const memeHTML = loadFromStorage(memeId).memeHTML
-    const imgID = memeHTML.selectedImgID
-    const elImg = document.querySelector(`[data-img-id="${imgID}"]`)
-    memeHTML.elImg = elImg
-    setMemeFromSavedList(memeHTML, memeId)
+    // debugger
+    const memeFromStorage = loadFromStorage(memeId)
+    const meme = memeFromStorage.meme
+    if (meme.fileType === 'internal') {
+        const imgID = meme.selectedImgID
+        var elImg = document.querySelector(`[data-img-id="${imgID}"]`)
+        meme.elImg = elImg
+    } else {
+        // console.log(gImg)
+        // console.log(meme.elImg)
+        var image = new Image();
+        image.src = memeFromStorage.imgURL
+        meme.elImg = image
+    }
+    // console.log('my meme:',meme)
+
+    setMemeFromSavedList(meme, memeId)
     clearCanvas()
     renderMeme()
     renderDeleteButton(memeId)
@@ -309,25 +309,55 @@ function renderDeleteButton(elLiMemeName) {
 }
 
 function onDeleteMeme(memeId) {
-    //todo open confimration modal for delete
+    renderDeleteModal(memeId)
+    document.querySelector('.modal').hidden = false;
+}
+
+function onConfirmDelete(memeId) {
+    document.querySelector('.modal').hidden = true;
     deleteMeme(memeId)
     document.querySelector('.meme-editor').hidden = true;
     document.querySelector('.images-container').style.display = 'block';
     renderSavedMemesList()
 }
 
+function renderDeleteModal(memeId) {
+    var strHTML = `Are you sure?</div>
+    <button onclick="onConfirmDelete('${memeId}')">Yes, delete</button>
+    <button onclick="closeModal()">Cancel</button>`
+    document.querySelector('.modal-content').innerHTML = strHTML
+}
+
+function closeModal() {
+    document.querySelector('.modal').hidden = true;
+}
+
+
 
 function onResetMeme() {
+    renderConfirmResetModal()
+    document.querySelector('.modal').hidden = false;
+}
+
+function onConfirmReset() {
+    document.querySelector('.modal').hidden = true;
     clearCanvas()
     resetMeme()
     renderMeme()
 }
 
+function renderConfirmResetModal() {
+    var strHTML = `Are you sure?</div>
+    <button onclick="onConfirmReset()">Yes, reset</button>
+    <button onclick="closeModal()">Cancel</button>`
+    document.querySelector('.modal-content').innerHTML = strHTML
+}
+
 function isOnLine(x, y) {
     const meme = getMeme()
     var clickedLine = meme.lines.find(line => {
-        return y > line.height
-            && y < line.height + line.fontSize * 1.2
+        return y > line.yLoc
+            && y < line.yLoc + line.fontSize * 1.2
             && x > 10
             && x < gCanvas.width - 10
     })
@@ -337,6 +367,12 @@ function isOnLine(x, y) {
 function onMouseDown(ev) {
     const line = isOnLine(ev.offsetX, ev.offsetY)
     if (!line) return
+
+    //switch context
+    gMeme.selectedLineIdx = line.index
+    document.querySelector('.input-line').value = line.text;
+    document.querySelector('.font-selector').value = line.fontFamily
+
     gDraggedLine = line
     gCanvas.addEventListener("mousemove", onMouseMove)
     gCanvas.addEventListener("mouseup", onMouseUp)
@@ -351,7 +387,8 @@ function onMouseUp() {
 function onMouseMove(ev) {
     var offsetX = ev.offsetX
     var offsetY = ev.offsetY
-    gDraggedLine.height = offsetY
+    gDraggedLine.yLoc = offsetY
+    gDraggedLine.xLoc = offsetX
     renderMeme()
     if (offsetX <= 10 || offsetX >= gCanvas.width - 10 || offsetY <= 10 || offsetY >= gCanvas.height - 10)
         onMouseUp()
@@ -365,24 +402,63 @@ function onTouchStart(ev) {
     const y = ev.touches[0].clientY - ev.touches[0].target.offsetTop
     const line = isOnLine(x, y)
     if (!line) return
-    console.log('line')
+    //switch context
+    gMeme.selectedLineIdx = line.index
+    document.querySelector('.input-line').value = line.text;
+    document.querySelector('.font-selector').value = line.fontFamily
+
     gDraggedLine = line
-    gCanvas.addEventListener("ontouchend", onTouchEnd)
-    gCanvas.addEventListener("ontouchnove", onTouchMove)
+    gCanvas.addEventListener("touchend", onTouchEnd)
+    gCanvas.addEventListener("touchmove", onTouchMove)
 
 }
 
 function onTouchEnd() {
-    console.log('touch end')
-    gCanvas.removeEventListener("ontouchnove", onMouseMove)
-    gCanvas.removeEventListener("ontouchend", onMouseUp)
+    gCanvas.removeEventListener("touchmove", onMouseMove)
+    gCanvas.removeEventListener("touchend", onMouseUp)
 }
 
 function onTouchMove(ev) {
     const x = ev.touches[0].clientX - ev.touches[0].target.offsetLeft
     const y = ev.touches[0].clientY - ev.touches[0].target.offsetTop
-    gDraggedLine.height = offsetY
+    gDraggedLine.yLoc = y
+    gDraggedLine.xLoc = x
     renderMeme()
     if (x <= 10 || x >= gCanvas.width - 10 || y <= 10 || y >= gCanvas.height - 10)
         onTouchEnd()
+}
+
+
+function renderFile(img) {
+    clearCanvas()
+    gCanvas.width = img.width;
+    gCanvas.height = img.height;
+    gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
+    setMeme('external', 999, img)
+    // gImg = img
+    resetMeme()
+    const meme = getMeme()
+    const lines = meme.lines
+    const markedLine = meme.selectedLineIdx
+    lines.forEach(line => {
+        drawTextBox(line, markedLine)
+        drawText(line)
+    });
+    document.querySelector('.delete-button-content').hidden = true
+}
+
+// The next 2 functions handle IMAGE UPLOADING to img tag from file system: 
+function onImgInput(ev) {
+    loadImageFromInput(ev, renderFile)
+}
+
+function loadImageFromInput(ev, onImageReady) {
+    // document.querySelector('.share-container').innerHTML = ''
+    var reader = new FileReader();
+    reader.onload = function (event) {
+        var img = new Image();
+        img.onload = onImageReady.bind(null, img)
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(ev.target.files[0]);
 }

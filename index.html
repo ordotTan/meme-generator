@@ -9,22 +9,23 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body onload="onInit()" onkeydown="onMoveLineKeyboard(event,3)">
+<body onload="onInit()">
 
     <div class="saved-memes-container">
-        Saved Memes:
+        Saved Meme:
         <div class="saved-memes-content"></div>
     </div>
 
     <div class="meme-editor" hidden>
         <section class="canvas-container" >
-            <canvas id="my-canvas" height="500" width="500" onclick="onCanvasClick(event)" onmousedown="onMouseDown(event)"
+            <canvas id="my-canvas" height="300" width="300" onclick="" onmousedown="onMouseDown(event)"
                 onmousemove="" onmouseup="" ontouchstart="onTouchStart(event)" ontouchend="" ontouchmove="">
             </canvas>
         </section>
 
         <section class="control-panel">
-            <img style="width:60px" src="img/sunglasses.png">>
+            <img style="width:60px" src="img/sunglasses.png">
+            <input type="file" name="image" onchange="onImgInput(event)" />
             <input class="input-line" type="text" onkeyup="onUpdateLine(this)"></input>
             <img class="icon" src="img/increase_font.png" onclick="onChangeFontSize(1)">
             <img class="icon" src="img/decrease_font.png" onclick="onChangeFontSize(-1)">
@@ -80,12 +81,11 @@
     </div>
 
     <!-- Modals --> 
+    <!-- Delete Saved meme / Reset Modal -->
+    <div class="modal" hidden>
+        <div class="modal-content"></div>
+    </div>
 
-    <!-- Save meme modal -->
-
-    <!-- Delete meme Confirmation modal -->
-
-    <script src="https://unpkg.com/konva@4.2.2/konva.min.js"></script>
     <script src="js/util.js"></script>
     <script src='js/upload-service.js'></script>
     <script src="js/storage-service.js"></script>

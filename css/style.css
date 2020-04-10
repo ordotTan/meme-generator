@@ -34,8 +34,8 @@ a {
 
 .canvas-container {
     margin: 0 auto;
-    width: 500px;
-    height: 500px;
+    width: 300px;
+    height: 300px;
 }
 
  /* Search/Filter Panel */
@@ -65,7 +65,7 @@ a {
 }
 
 .memes-list img {
-    width: 200px;
+    width: 100px;
 }
 
 
@@ -90,7 +90,23 @@ button.save-meme {
     cursor: pointer;
   }
 
+  /* Modal */
 
+.modal {
+
+    position: fixed;
+    top: 15%;
+    left:42%;
+    padding: 10px;
+    background-color:#ad9b9bcf;
+    border-radius: 5px;
+    border: 1px solid black;
+
+}
+
+.modal-content {
+    max-width:400px;
+}
 
  /* Helpers */
 
