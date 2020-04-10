@@ -1,15 +1,20 @@
 'use strict'
 
 var gKeywords = {
-    'happy': 12,
-    'sad': 3,
-    'funny': 8
+    'awsome': 10,
+    'happy': 2,
+    'sad': 4,
+    'funny': 2,
+    'strong': 6,
+    'vip': 6
 }
+
+var gSavedMemes = []
 
 var gSearchText = ''
 
 var gImgs = [
-    { id: 1, url: 'img/1.jpg', keywords: ['happy','sad'] },
+    { id: 1, url: 'img/1.jpg', keywords: ['happy', 'sad'] },
     { id: 2, url: 'img/2.jpg', keywords: ['sad'] },
     { id: 3, url: 'img/3.jpg', keywords: ['afunny'] },
     { id: 4, url: 'img/4.jpg', keywords: ['happy'] },
@@ -40,17 +45,23 @@ function getImages() {
 }
 
 function checkImg(img) {
-    var img = img.keywords.some (word => word.startsWith(gSearchText))
+    var img = img.keywords.some(word => word.startsWith(gSearchText))
     return img
-  }
+}
 
 function setSearchText(searchText) {
     gSearchText = searchText
 }
 
-function setMeme(imgId) {
+function setMeme(imgId,elImg) {
+    gMeme.elImg = elImg
     gMeme.selectedImgID = imgId
     gMeme.selectedLineIdx = 0
+}
+
+function setMemeFromSavedList(meme,memeId) {
+    gMeme = meme
+    gMeme.memeId = memeId
 }
 
 function getMeme() {
@@ -168,12 +179,35 @@ function updateKeywordCount(imgId) {
     const selectedImgKeyWords = gImgs.find(img => img.id === imgId).keywords
     selectedImgKeyWords.forEach(keyword => {
         if (!gKeywords[keyword]) {
-            gKeywords[keyword] = 0   
+            gKeywords[keyword] = 0
         }
-         gKeywords[keyword]++
+        gKeywords[keyword]++
     })
 }
 
 function getKeywords() {
     return gKeywords
+}
+
+function saveMeme(meme,isOverwrite) {
+    const memeId = meme.memeId
+    meme.memeHTML = gMeme
+    saveToStorage(memeId,meme)
+    if (!isOverwrite) {
+        gSavedMemes.push(memeId)
+        saveToStorage('MEME_LIST',gSavedMemes)
+    } 
+}
+
+function loadSavedMemesList () {
+    gSavedMemes = loadFromStorage('MEME_LIST')
+    if (!gSavedMemes) gSavedMemes=[]
+}
+
+function deleteMeme(memeId) {
+    removeFromStorage(memeId)
+    gMeme.memeId=''
+    const idxToRemove = gSavedMemes.findIndex(savedMeme => memeId === savedMeme)
+    gSavedMemes.splice(idxToRemove,1)
+    saveToStorage('MEME_LIST',gSavedMemes)
 }

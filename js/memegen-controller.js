@@ -14,7 +14,9 @@ function onInit() {
     const elFontColorPicker = document.querySelector('.font-color-picker')
     elLineColorPicker.addEventListener("change", onSetLineColor);
     elFontColorPicker.addEventListener("change", onSetFontColor);
-    renderKeywords()
+    renderFirstKeywords()
+    loadSavedMemesList()
+    renderSavedMemesList()
     renderGallery()
 }
 
@@ -29,13 +31,11 @@ function resizeCanvas() {
 function onSelectImg(elImg, imgId) {
     document.querySelector('.meme-editor').hidden = false;
     document.querySelector('.images-container').style.display = 'none';
-    const meme = getMeme()
-    meme.elImg = elImg
+    setMeme(imgId,elImg)
     clearCanvas()
     resetMeme()
-    setMeme(imgId)
     updateKeywordCount(imgId)
-    renderKeywords()
+    renderFirstKeywords()
     renderMeme()
 }
 
@@ -50,6 +50,7 @@ function renderMeme(forExternalUse = false) {
         if (!forExternalUse) drawTextBox(line, markedLine)
         drawText(line)
     });
+    document.querySelector('.delete-button-content').hidden=true
 }
 
 function drawTextBox(line, markedLine) {
@@ -172,12 +173,12 @@ function onMoveLine(delta) {
     renderMeme()
 }
 
-function onMoveLineKeyboard(ev,delta) {
+function onMoveLineKeyboard(ev, delta) {
     // ev.preventDefault()
     const meme = getMeme()
-    if (meme.selectedLineIdx || meme.selectedLineIdx ===0 ) {
-    setLineHeightKeyboard(ev,delta)
-    renderMeme()
+    if (meme.selectedLineIdx || meme.selectedLineIdx === 0) {
+        setLineHeightKeyboard(ev, delta)
+        renderMeme()
     }
 
 }
@@ -195,7 +196,7 @@ function onCanvasClicked(ev) {
             && offsetX < gCanvas.width - 10
     })
     if (!clickedLine) return
-    
+
     gMeme.selectedLineIdx = clickedLine.index
     document.querySelector('.input-line').value = clickedLine.text;
     document.querySelector('.font-selector').value = clickedLine.fontFamily
@@ -203,7 +204,7 @@ function onCanvasClicked(ev) {
 }
 
 function onSearchGallery(elInput) {
-    document.querySelector('.images-content').innerHTML='';
+    document.querySelector('.images-content').innerHTML = '';
     setSearchText(elInput.value)
     renderGallery()
 }
@@ -211,19 +212,122 @@ function onSearchGallery(elInput) {
 function renderKeywords() {
     const keywords = getKeywords()
     const sumKeywords = sumObjectMap(keywords)
-    let strHTML='<ul class="clean-list flex align-center justify-content">'
+    let strHTML = '<ul class="clean-list flex align-center justify-content">'
     for (let [key, value] of Object.entries(keywords)) {
-       strHTML+=`<li onclick="onFilterGallery(this)" style="font-size:${(value/sumKeywords)*100}%">${key}</li>`
+        strHTML += `<li onclick="onFilterGallery(this)" style="font-size:${(value / sumKeywords) * 100}%">${key}</li>`
     }
-    strHTML+='</ul>'
+    strHTML += '<li style="font-size:20%";><span onclick="renderFirstKeywords()">...less</span></li></ul>'
     document.querySelector('.keywords-content').innerHTML = strHTML
 }
 
 
-//todo - give active style to the clicked keyword
+function renderFirstKeywords() {
+    const keywords = getKeywords()
+    const sumKeywords = sumObjectMap(keywords)
+    const values = Object.values(keywords)
+    const keys = Object.keys(keywords)
+    let strHTML = '<ul class="clean-list flex align-center justify-content">'
+
+    for (let i = 0; i < 3; i++) {
+        strHTML += `<li onclick="onFilterGallery(this)" style="font-size:${(values[i] / sumKeywords) * 100}%">${keys[i]}</li>`
+    }
+    strHTML += '<li style="font-size:20%";><span onclick="renderKeywords()">...more</span></li></ul>'
+    document.querySelector('.keywords-content').innerHTML = strHTML
+}
+
+
 function onFilterGallery(elKeyword) {
+    const elKeywords = document.querySelectorAll('.keywords-content li')
+    elKeywords.forEach(keyword => {
+        keyword.classList.remove('selected')
+    })
+    elKeyword.classList.add('selected')
     setSearchText(elKeyword.innerText)
     document.querySelector('.search-input').value = elKeyword.innerText
     renderGallery()
 }
 
+
+function onSaveMeme() {
+    var isOverwrite = false
+    const meme = getMeme()
+    var dataURL = gCanvas.toDataURL();
+    if (!meme.memeId) {
+        var memeId = makeId(6)//prompt('Name?') //todo open modal to get name input
+    }
+    else {
+        //todo open confimration modal for overwrite
+        const meme = getMeme()
+        var memeId = meme.memeId
+        isOverwrite = true
+    }
+    const memeData = {memeId:memeId,imgURL:dataURL} //todo!!!
+    saveMeme(memeData,isOverwrite)
+    renderSavedMemesList()
+    renderDeleteButton(memeId)
+    document.querySelector('.meme-editor').hidden = true;
+    document.querySelector('.images-container').style.display = 'block';
+}
+
+
+function renderSavedMemesList1() {
+    const memes = loadFromStorage('MEME_LIST')
+    if (!memes) return
+    let strHTML = '<ul class="memes-list clean-list flex align-center justify-content">'
+    memes.forEach(meme => {
+        strHTML += `<li onclick="onShowMeme(this)">${meme}</li>`
+    })
+
+    strHTML += '</ul>'
+    document.querySelector('.saved-memes-content').innerHTML = strHTML
+}
+
+
+function renderSavedMemesList() {
+    const memes = loadFromStorage('MEME_LIST')
+    if (!memes) return
+    let strHTML = '<ul class="memes-list clean-list flex align-center justify-content">'
+    memes.forEach(meme => {
+        const memeData = loadFromStorage(meme)
+        strHTML += `<li><img onclick="onShowMeme('${memeData.memeId}')" src="${memeData.imgURL}"></li>`
+    })
+    strHTML += '</ul>'
+    document.querySelector('.saved-memes-content').innerHTML = strHTML
+}
+
+function onShowMeme(memeId) {
+    document.querySelector('.meme-editor').hidden = false;
+    document.querySelector('.images-container').style.display = 'none';
+    const memeHTML = loadFromStorage(memeId).memeHTML
+    const imgID = memeHTML.selectedImgID
+    const elImg = document.querySelector(`[data-img-id="${imgID}"]`)
+    memeHTML.elImg = elImg
+    setMemeFromSavedList(memeHTML,memeId)
+    clearCanvas()
+    renderMeme()
+    renderDeleteButton(memeId)
+    document.querySelector('.delete-button-content').hidden=false
+
+}
+
+function renderDeleteButton(elLiMemeName) {
+
+    const strHTML = `<button onclick="onDeleteMeme('${elLiMemeName}')">Delete</button>`
+    document.querySelector('.delete-button-content').innerHTML =strHTML
+
+}
+
+function onDeleteMeme(memeId) {
+     //todo open confimration modal for delete
+    deleteMeme (memeId)
+    document.querySelector('.meme-editor').hidden = true;
+    document.querySelector('.images-container').style.display = 'block';
+    renderSavedMemesList()
+}
+
+
+function onResetMeme() {
+    clearCanvas()
+    resetMeme()
+    renderMeme()
+}

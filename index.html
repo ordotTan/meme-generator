@@ -11,9 +11,14 @@
 
 <body onload="onInit()" onkeydown="onMoveLineKeyboard(event,3)">
 
+    <div class="saved-memes-container">
+        Saved Memes:
+        <div class="saved-memes-content"></div>
+    </div>
+
     <div class="meme-editor" hidden>
         <section class="canvas-container" >
-            <canvas id="my-canvas" height="600" width="600" onclick="onCanvasClicked(event)" onmousedown=""
+            <canvas id="my-canvas" height="500" width="500" onclick="onCanvasClicked(event)" onmousedown=""
                 onmousemove="" onmouseup="" ontouchstart="" ontouchend="" ontouchmove="">
             </canvas>
         </section>
@@ -44,10 +49,13 @@
                 <label for="fontColor">Font</label>
                 <input class="font-color-picker" type="color" name="fontColor" value="#FFFFFF">
             </div>
+            <button onclick="onResetMeme()">Reset</button>
 
         </section>
 
-        <section>
+        <button class="save-meme" onclick="onSaveMeme()">Save</button>
+        <div class="delete-button-content"></div>
+        <section> 
             <form action="" method="POST" enctype="multipart/form-data" onsubmit="onUploadImg(this, event)">
                 <input name="img" id="imgData" type="hidden" />
                 <button class="btn" type="submit">Publish</button>
@@ -57,10 +65,8 @@
         </section>
     </div>
 
-
-
     <div class="images-container">
-        <input class="search-input" list="recent_searches" type="text" onkeyup="onSearchGallery(this)"></input>
+        <input class="search-input" list="recent_searches" type="text" onkeyup="onSearchGallery(this)" placeholder="Search memes"></input>
         <div class="keywords-content" style="font-size:100px;"></div>
         <datalist id="recent_searches">
             <option value="funny" label="funny" />
@@ -70,8 +76,13 @@
         <section class="images-gallery flex justify-center">
             <div class="images-content"></div>
         </section>
-
     </div>
+
+    <!-- Modals --> 
+
+    <!-- Save meme modal -->
+
+    <!-- Delete meme Confirmation modal -->
 
 
     <script src="js/util.js"></script>

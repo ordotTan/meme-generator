@@ -34,8 +34,8 @@ a {
 
 .canvas-container {
     margin: 0 auto;
-    width: 600px;
-    height: 600px;
+    width: 500px;
+    height: 500px;
 }
 
  /* Search/Filter Panel */
@@ -45,12 +45,39 @@ a {
     cursor: pointer;
 }
 
+.keywords-content li:hover {
+    color: green;
+}
+
+.keywords-content li.selected {
+    color:red;
+}
+
+.keywords-content li span:hover {
+    color:purple;
+}
+
+ /* Memes tab */
+
+ .memes-list li {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.memes-list img {
+    width: 200px;
+}
+
+
+button.save-meme {
+    cursor: pointer;
+}
 
  /* Images Gallery */
 
  .images-gallery img {
-     height: 300px;
-     width: 300px;
+     height: 250px;
+     width: 250px;
      cursor: pointer;
  }
 
