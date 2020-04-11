@@ -1,11 +1,18 @@
 'use strict'
 
+// var gKeywords = {
+//     'awsome': 10,
+//     'happy': 2,
+//     'sad': 4,
+//     'funny': 2,
+//     'strong': 6,
+//     'vip': 6
+// }
+
 var gKeywords = {
-    'awsome': 10,
+    'sad': 2,
     'happy': 2,
-    'sad': 4,
     'funny': 2,
-    'strong': 6,
     'vip': 6
 }
 
@@ -85,8 +92,8 @@ function updateLineFontSize(delta) {
 }
 
 function updateLineAlignment(alignType) {
-    if (alignType === 'left') gMeme.lines[gMeme.selectedLineIdx].xLoc =  20
-    else if (alignType === 'right') gMeme.lines[gMeme.selectedLineIdx].xLoc  = gCanvas.width - 20
+    if (alignType === 'left') gMeme.lines[gMeme.selectedLineIdx].xLoc =  5
+    else if (alignType === 'right') gMeme.lines[gMeme.selectedLineIdx].xLoc  = gCanvas.width - 5
     else if (alignType === 'center') gMeme.lines[gMeme.selectedLineIdx].xLoc  = gCanvas.width / 2
     gMeme.lines[gMeme.selectedLineIdx].alignType = alignType
 }
@@ -95,7 +102,7 @@ function updateLineAlignment(alignType) {
 function resetMeme() {
     gMeme.lines = []
     addLine()
-    addLine()
+    addLine() 
     switchLine()
 }
 
@@ -109,7 +116,7 @@ function addLine() {
             y = 20;
             break;
         case 1:
-            y = gCanvas.height - 60    //bottom 
+            y = gCanvas.height - 80    //bottom 
             break;
         default:
             y = (gCanvas.height - 30) / 2; // middle
@@ -125,7 +132,7 @@ function addLine() {
         strokeColor: 'black',
         fontColor: 'white',
         fontFamily: 'Impact',
-        fontSize: 30
+        fontSize: 50
     }
     gMeme.selectedLineIdx = gMeme.lines.length
     gMeme.lines.push(line)

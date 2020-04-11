@@ -9,10 +9,8 @@ function onUploadImg(elForm, ev) {
     function onSuccess(uploadedImgUrl) {
         console.log (uploadedImgUrl)
         uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-        document.querySelector('.share-container').innerHTML = `
-        <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
-           Share   
-        </a>`
+        document.querySelector('.share-container').innerHTML = 
+        `<a class="control-panel-btn" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">Share</a>`
     }
 
     doUploadImg(elForm, onSuccess);

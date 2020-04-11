@@ -6,81 +6,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Meme Generator</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body onload="onInit()">
+    <a id="top"></a>
+    <header class="main-header container">
+        <div class="flex align-center space-between">
+            <div class="logo">
+                <img src="img/LOGO.png">
+            </div>
+            <ul class="main-nav clean-list flex">
+                <li class="flex"><a class="gallery-link active" onclick="toggleMenu(this)" href="#">Gallery</a></li>
+                <li class="flex"><a class="editor-link disable" onclick="toggleMenu(this)" href="#">Editor</a></li>
+                <li class="flex"><a class="saved-memes-link" onclick="toggleMenu(this)" href="#">Saved Memes</a></li>
+                <li class="flex"><a class="about-link" onclick="toggleMenu(this)" href="#about">About</a></li>
+                </li>
+            </ul>
+        </div>
+    </header>
 
-    <div class="saved-memes-container">
-        Saved Meme:
-        <div class="saved-memes-content"></div>
-    </div>
+    <main class="images-container container">
+        <section class="search-bar flex space-between">
+            <div class="search-area">
+                <img class="icon" src="img/search-icon.png">
+                <input class="search-input" list="recent_searches" type="text" onkeyup="onSearchGallery(this)"
+                    placeholder="Search Keyword"></input>
+            </div>
+            <div class="keywords-content" style="font-size:100px;"></div>
+            <datalist id="recent_searches">
+                <option value="funny" label="funny" />
+                <option value="happy" label="happy" />
+                <option value="sad" label="sad" />
+            </datalist>
+            <div class="file-upload-area flex">
+                <img class="file-upload-icon" src="img/file_upload.png">
+                <input class="file-input" type="file" id="file" name="image" onchange="onImgInput(event)" />
+                <label for="file">Choose your image</label>
+            </div>
+        </section>
+        <section class="images-gallery flex justify-center align-center">
+            <div class="images-content container"></div>
+        </section>
+    </main>
 
-    <div class="meme-editor" hidden>
-        <section class="canvas-container" >
-            <canvas id="my-canvas" height="300" width="300" onclick="" onmousedown="onMouseDown(event)"
-                onmousemove="" onmouseup="" ontouchstart="onTouchStart(event)" ontouchend="" ontouchmove="">
+    <div class="meme-editor container flex">
+        <section class="canvas-container">
+            <canvas id="my-canvas" height="500" width="500" onclick="" onmousedown="onMouseDown(event)" onmousemove=""
+                onmouseup="" ontouchstart="onTouchStart(event)" ontouchend="" ontouchmove="">
             </canvas>
         </section>
 
-        <section class="control-panel">
-            <img style="width:60px" src="img/sunglasses.png">
-            <input type="file" name="image" onchange="onImgInput(event)" />
-            <input class="input-line" type="text" onkeyup="onUpdateLine(this)"></input>
-            <img class="icon" src="img/increase_font.png" onclick="onChangeFontSize(1)">
-            <img class="icon" src="img/decrease_font.png" onclick="onChangeFontSize(-1)">
-            <img class="icon" src="img/align-to-left.png" onclick="onChangeAlignment('left')">
-            <img class="icon" src="img/align-to-center.png" onclick="onChangeAlignment('center')">
-            <img class="icon" src="img/align-to-right.png" onclick="onChangeAlignment('right')">
-            <img class="icon" src="img/addLine.png" onclick="onAddLine()">
-            <img class="icon" src="img/trash.png" onclick="onRemoveLine()">
-            <img class="icon" src="img/switchLine.png" onclick="onSwitchLine()">
-            <img class="icon" src="img/up_arrow.png" onclick="onMoveLine(-5)">
-            <img class="icon" src="img/down_arrow.png" onclick="onMoveLine(5)">
-
-            <select class="font-selector" onChange="onChangeFont(this)">
-                <option value="Impact" selected>Impact</option>
-                <option value="Ariel">Ariel</option>
-            </select>
-            <div>
-                <label for="lineColor">Stroke</label>
-                <input class="line-color-picker" type="color" name="lineColor" value="#000000">
+        <section class="control-panel grid-container">
+            <div class="input-text"><input class="input-line" type="text" onkeyup="onUpdateLine(this)"></input></div>
+            <div class="switch-line icon-holder" onclick="onSwitchLine()"> <img class="icon" src="img/switchLine.png"
+                    title="Focus Next Line"></div>
+            <div class="add-line icon-holder" onclick="onAddLine()"> <img class="icon" src="img/addLine.png"
+                    title="Add Line"></div>
+            <div class="delete-line icon-holder" onclick="onRemoveLine()"> <img class="icon" src="img/trash.png"
+                    title="Delete Line"></div>
+            <div class="delete-meme delete-button-content"></div>
+            <div class="inc-font icon-holder" onclick="onChangeFontSize(1)"> <img class="icon"
+                    src="img/increase_font.png" title="Increase Font Size"></div>
+            <div class="dec-font icon-holder" onclick="onChangeFontSize(-1)"><img class="icon"
+                    src="img/decrease_font.png" title="Decrease Font Size"></div>
+            <div class="align-left icon-holder" onclick="onChangeAlignment('left')"> <img class="icon"
+                    src="img/align-to-left.png" title="Align Left"> </div>
+            <div class="align-center icon-holder" onclick="onChangeAlignment('center')"> <img class="icon"
+                    src="img/align-to-center.png" title="Align Center"></div>
+            <div class="align-right icon-holder" onclick="onChangeAlignment('right')"> <img class="icon"
+                    src="img/align-to-right.png" title="Align Right"></div>
+            <div class="font"> <select class="font-selector" onChange="onChangeFont(this)">
+                    <option value="Impact" selected>Impact</option>
+                    <option value="Ariel">Ariel</option>
+                </select>
             </div>
-
-            <div>
-                <label for="fontColor">Font</label>
-                <input class="font-color-picker" type="color" name="fontColor" value="#FFFFFF">
+            <div class="stroke-color icon-holder" onclick="onOpenStrokePallete()">
+                <img class="icon" src="img/font-stroke.png" title="Change Font Stroke Color">
+                <input class="line-color-picker" type="color" name="lineColor" value="#000000" hidden>
             </div>
-            <button onclick="onResetMeme()">Reset</button>
-
+            <div class="font-color icon-holder" onclick="onOpenFontColorPallete()">
+                <img class="icon" src="img/font-color.png" title="Change Font Color">
+                <input class="font-color-picker" type="color" name="fontColor" value="#FFFFFF" hidden>
+            </div>
+            <div class="download icon-holder" onclick="onDownloadCanvas(this)" download="">
+                <a href="#" onclick="onDownloadCanvas(this)" download="">
+                    <img class="icon"
+                    src="img/download.png" title="Download Meme">
+                </a></div>
+            <div class="save icon-holder" onclick="onSaveMeme()">
+                <img class="icon"
+                    src="img/save.png" title="Same Meme">
+            </div>
+            <div class="reset icon-holder" onclick="onResetMeme()">
+                <img class="icon"
+                    src="img/reset.png" title="Reset Meme">
+                </div>
+            <div class="publish">
+                <form action="" method="POST" enctype="multipart/form-data" onsubmit="onUploadImg(this, event)">
+                    <input name="img" id="imgData" type="hidden" />
+                    <button class="control-panel-btn" type="submit">Publish</button>
+                    <!-- <div class="share-container"></div> -->
+                </form>
+            </div>
+            <div class="share-container"></div>
         </section>
+        <!-- end of grid -->
+    </div>
+     <!-- end of editor section -->
 
-        <button class="save-meme" onclick="onSaveMeme()">Save</button>
-        <div class="delete-button-content"></div>
-        <section> 
-            <form action="" method="POST" enctype="multipart/form-data" onsubmit="onUploadImg(this, event)">
-                <input name="img" id="imgData" type="hidden" />
-                <button class="btn" type="submit">Publish</button>
-                <a class="btn" href="#" onclick="onDownloadCanvas(this)" download="">Download</a>
-                <div class="share-container"></div>
-            </form>
-        </section>
+
+    <div class="saved-memes-container container" hidden>
+        <div class="saved-memes-content flex wrap"></div>
     </div>
 
-    <div class="images-container">
-        <input class="search-input" list="recent_searches" type="text" onkeyup="onSearchGallery(this)" placeholder="Search memes"></input>
-        <div class="keywords-content" style="font-size:100px;"></div>
-        <datalist id="recent_searches">
-            <option value="funny" label="funny" />
-            <option value="happy" label="happy" />
-            <option value="sad" label="sad" />
-        </datalist>
-        <section class="images-gallery flex justify-center">
-            <div class="images-content"></div>
-        </section>
-    </div>
 
-    <!-- Modals --> 
+    <a id="about"></a>
+    <section class="about-content container">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, delectus? Voluptates quidem ullam qui perspiciatis exercitationem placeat soluta delectus possimus commodi similique reiciendis, omnis cupiditate quaerat quibusdam quisquam? Similique, consequatur.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, delectus? Voluptates quidem ullam qui perspiciatis exercitationem placeat soluta delectus possimus commodi similique reiciendis, omnis cupiditate quaerat quibusdam quisquam? Similique, consequatur.</p>
+
+    </section>
+
+    <footer class="footer-content container flex column justify-center align-center">
+        <div class="logo">
+            <a href="#top"><img src="img/LOGO.png"></a>
+        </div>
+        <small class="flex">all rights reserved 2020</small>
+    </footer>
+
+
+    <!-- Modals -->
     <!-- Delete Saved meme / Reset Modal -->
     <div class="modal" hidden>
         <div class="modal-content"></div>
