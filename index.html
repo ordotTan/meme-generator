@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Meme Generator</title>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Girassol|Ubuntu|Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body onload="onInit()">
+    <section class="screen" onclick="toggleHamburger()"></section>
     <a id="top"></a>
     <header class="main-header container">
         <div class="flex align-center space-between">
@@ -18,12 +19,13 @@
                 <img src="img/LOGO.png">
             </div>
             <ul class="main-nav clean-list flex">
-                <li class="flex"><a class="gallery-link active" onclick="toggleMenu(this)" href="#">Gallery</a></li>
-                <li class="flex"><a class="editor-link disable" onclick="toggleMenu(this)" href="#">Editor</a></li>
-                <li class="flex"><a class="saved-memes-link" onclick="toggleMenu(this)" href="#">Saved Memes</a></li>
-                <li class="flex"><a class="about-link" onclick="toggleMenu(this)" href="#about">About</a></li>
+                <li class="flex gallery-link active"><a class="" onclick="toggleMenu(this)" href="#">Gallery</a></li>
+                <li class="flex editor-link"><a class="" onclick="toggleMenu(this)" href="#">Editor</a></li>
+                <li class="flex saved-memes-link"><a class="" onclick="toggleMenu(this)" href="#">Saved Memes</a></li>
+                <li class="flex about-link"><a class="" onclick="toggleMenu(this)" href="#about">About</a></li>
                 </li>
             </ul>
+            <button onclick="toggleHamburger()" class="btn-menu"></button>
         </div>
     </header>
 
@@ -36,18 +38,32 @@
             </div>
             <div class="keywords-content" style="font-size:100px;"></div>
             <datalist id="recent_searches">
-                <option value="funny" label="funny" />
-                <option value="happy" label="happy" />
-                <option value="sad" label="sad" />
+                <option value="animal" label="animal" />
+                <option value="politics" label="politics" />
+                <option value="baby" label="baby" />
+                <option value="sport" label="sport" />
             </datalist>
             <div class="file-upload-area flex">
                 <img class="file-upload-icon" src="img/file_upload.png">
                 <input class="file-input" type="file" id="file" name="image" onchange="onImgInput(event)" />
-                <label for="file">Choose your image</label>
+                <label for="file">Upload image</label>
             </div>
         </section>
-        <section class="images-gallery flex justify-center align-center">
+
+        <section class="images-gallery">
             <div class="images-content container"></div>
+        </section>
+
+        <a id="about"></a>
+        <section class="about-content flex column align-center container">
+            <img src="img/me.png">
+            <h3>Or Dotan</h3>
+            <h4>Full Stack Developer</h4>
+            <div class="links flex">
+                <a href="https://www.linkedin.com/in/or-dotan-46551916/" target="_blank"><img src="img/linkedin-logo.png" title="My Linkedin profile"></a>
+                <a href="https://www.facebook.com/ordel" target="_blank"><img src="img/facebook-logo.png" title="My Facebook profile"></a>
+                <a href="https://github.com/ordotTan" target="_blank"><img src="img/github-logo.png" title="My Github profile"></a>
+            </div>
         </section>
     </main>
 
@@ -64,12 +80,12 @@
                     title="Focus Next Line"></div>
             <div class="add-line icon-holder" onclick="onAddLine()"> <img class="icon" src="img/addLine.png"
                     title="Add Line"></div>
-            <div class="delete-line icon-holder" onclick="onRemoveLine()"> <img class="icon" src="img/trash.png"
+            <div class="delete-line icon-holder" onclick="onRemoveLine()"> <img class="icon" src="img/remove_line.png"
                     title="Delete Line"></div>
             <div class="delete-meme delete-button-content"></div>
-            <div class="inc-font icon-holder" onclick="onChangeFontSize(1)"> <img class="icon"
+            <div class="inc-font icon-holder" onclick="onChangeFontSize(2)"> <img class="icon"
                     src="img/increase_font.png" title="Increase Font Size"></div>
-            <div class="dec-font icon-holder" onclick="onChangeFontSize(-1)"><img class="icon"
+            <div class="dec-font icon-holder" onclick="onChangeFontSize(-2)"><img class="icon"
                     src="img/decrease_font.png" title="Decrease Font Size"></div>
             <div class="align-left icon-holder" onclick="onChangeAlignment('left')"> <img class="icon"
                     src="img/align-to-left.png" title="Align Left"> </div>
@@ -80,6 +96,10 @@
             <div class="font"> <select class="font-selector" onChange="onChangeFont(this)">
                     <option value="Impact" selected>Impact</option>
                     <option value="Ariel">Ariel</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Ubuntu">Ubuntu</option>
+                    <option value="Girassol">Girassol</option>
+                    <option value="Monospace">Monospace</option>
                 </select>
             </div>
             <div class="stroke-color icon-holder" onclick="onOpenStrokePallete()">
@@ -92,21 +112,21 @@
             </div>
             <div class="download icon-holder" onclick="onDownloadCanvas(this)" download="">
                 <a href="#" onclick="onDownloadCanvas(this)" download="">
-                    <img class="icon"
-                    src="img/download.png" title="Download Meme">
+                    <img class="icon" src="img/download.png" title="Download Meme">
                 </a></div>
             <div class="save icon-holder" onclick="onSaveMeme()">
-                <img class="icon"
-                    src="img/save.png" title="Same Meme">
+                <img class="icon" src="img/save.jpg" title="Same Meme">
             </div>
             <div class="reset icon-holder" onclick="onResetMeme()">
-                <img class="icon"
-                    src="img/reset.png" title="Reset Meme">
-                </div>
+                <img class="icon" src="img/reset.png" title="Reset Meme">
+            </div>
             <div class="publish">
-                <form action="" method="POST" enctype="multipart/form-data" onsubmit="onUploadImg(this, event)">
+                <form style="text-align:center" method="POST" enctype="multipart/form-data" onsubmit="onUploadImg(this, event)">
                     <input name="img" id="imgData" type="hidden" />
-                    <button class="control-panel-btn" type="submit">Publish</button>
+                    <button class="icon-holder" type="submit"> 
+                        <!-- <img class="icon" src="img/upload.png" title="Upload Meme"> -->
+                        <img class="icon" src="img/facebook.jpeg" title="Upload Meme">
+                    </button>
                     <!-- <div class="share-container"></div> -->
                 </form>
             </div>
@@ -114,20 +134,13 @@
         </section>
         <!-- end of grid -->
     </div>
-     <!-- end of editor section -->
-
-
-    <div class="saved-memes-container container" hidden>
-        <div class="saved-memes-content flex wrap"></div>
+    <!-- end of editor section -->
+    <div class="container">
+        <section class="saved-memes-container">
+            <h2>Saved Memes</h2>
+            <div class="images-content-meme"></div>
+        </section>
     </div>
-
-
-    <a id="about"></a>
-    <section class="about-content container">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, delectus? Voluptates quidem ullam qui perspiciatis exercitationem placeat soluta delectus possimus commodi similique reiciendis, omnis cupiditate quaerat quibusdam quisquam? Similique, consequatur.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, delectus? Voluptates quidem ullam qui perspiciatis exercitationem placeat soluta delectus possimus commodi similique reiciendis, omnis cupiditate quaerat quibusdam quisquam? Similique, consequatur.</p>
-
-    </section>
 
     <footer class="footer-content container flex column justify-center align-center">
         <div class="logo">
@@ -142,7 +155,6 @@
     <div class="modal" hidden>
         <div class="modal-content"></div>
     </div>
-
     <script src="js/util.js"></script>
     <script src='js/upload-service.js'></script>
     <script src="js/storage-service.js"></script>

@@ -1,19 +1,10 @@
 'use strict'
 
-// var gKeywords = {
-//     'awsome': 10,
-//     'happy': 2,
-//     'sad': 4,
-//     'funny': 2,
-//     'strong': 6,
-//     'vip': 6
-// }
-
 var gKeywords = {
-    'sad': 2,
-    'happy': 2,
-    'funny': 2,
-    'vip': 6
+    'politics': 2,
+    'baby': 1,
+    'animal': 3,
+    'matrix': 4,
 }
 
 var gSavedMemes = []
@@ -21,24 +12,26 @@ var gSavedMemes = []
 var gSearchText = ''
 
 var gImgs = [
-    { id: 1, url: 'img/1.jpg', keywords: ['happy', 'sad'] },
-    { id: 2, url: 'img/2.jpg', keywords: ['sad'] },
-    { id: 3, url: 'img/3.jpg', keywords: ['afunny'] },
-    { id: 4, url: 'img/4.jpg', keywords: ['happy'] },
-    { id: 5, url: 'img/5.jpg', keywords: ['sad'] },
-    { id: 6, url: 'img/6.jpg', keywords: ['sad'] },
-    { id: 7, url: 'img/7.jpg', keywords: ['happy'] },
+    { id: 1, url: 'img/1.jpg', keywords: ['politics','trump','angry'] },
+    { id: 2, url: 'img/2.jpg', keywords: ['animal','dog','cute'] },
+    { id: 3, url: 'img/3.jpg', keywords: ['animal','dog','cute','baby'] },
+    { id: 4, url: 'img/4.jpg', keywords: ['animal','cat','cute'] },
+    { id: 5, url: 'img/5.jpg', keywords: ['baby','angry'] },
+    { id: 6, url: 'img/6.jpg', keywords: ['funny'] },
+    { id: 7, url: 'img/7.jpg', keywords: ['baby','shock'] },
     { id: 8, url: 'img/8.jpg', keywords: ['funny'] },
-    { id: 9, url: 'img/9.jpg', keywords: ['sad'] },
-    { id: 10, url: 'img/10.jpg', keywords: ['sad'] },
-    { id: 11, url: 'img/11.jpg', keywords: ['funny'] },
-    { id: 12, url: 'img/12.jpg', keywords: ['happy'] },
-    { id: 13, url: 'img/13.jpg', keywords: ['sad'] },
-    { id: 14, url: 'img/14.jpg', keywords: ['funny'] },
+    { id: 9, url: 'img/9.jpg', keywords: ['smile'] },
+    { id: 10, url: 'img/10.jpg', keywords: ['politics','smile','obama'] },
+    { id: 11, url: 'img/11.jpg', keywords: ['sport','kiss'] },
+    { id: 12, url: 'img/12.jpg', keywords: ['celeb'] },
+    { id: 13, url: 'img/13.jpg', keywords: ['celeb','cheers'] },
+    { id: 14, url: 'img/14.jpg', keywords: ['matrix'] },
     { id: 15, url: 'img/15.jpg', keywords: ['sad'] },
-    { id: 16, url: 'img/16.jpg', keywords: ['sad'] },
-    { id: 17, url: 'img/17.jpg', keywords: ['bbc'] },
-    { id: 18, url: 'img/18.jpg', keywords: ['bba'] }
+    { id: 16, url: 'img/16.jpg', keywords: ['picard','laugh'] },
+    { id: 17, url: 'img/17.jpg', keywords: ['politics','putin'] },
+    { id: 18, url: 'img/18.jpg', keywords: ['toys'] },
+    { id: 19, url: 'img/19.jpg', keywords: ['movie'] },
+    { id: 20, url: 'img/20.jpg', keywords: ['animal','dog'] }
 ]
 
 var gMeme = {
@@ -127,12 +120,12 @@ function addLine() {
         index: gMeme.lines.length,
         xLoc: gCanvas.width/2,
         yLoc: y,
-        text: 'Text',
+        text: 'Your text',
         alignType: 'center',
         strokeColor: 'black',
         fontColor: 'white',
         fontFamily: 'Impact',
-        fontSize: 50
+        fontSize: 30
     }
     gMeme.selectedLineIdx = gMeme.lines.length
     gMeme.lines.push(line)
@@ -145,7 +138,6 @@ function removeLine() {
         line.index = idx
     })
     gMeme.selectedLineIdx = 0
-
 }
 
 function getLineByID(id) {
@@ -154,7 +146,6 @@ function getLineByID(id) {
     })
     return line
 }
-
 
 function switchLine() {
     gMeme.selectedLineIdx++

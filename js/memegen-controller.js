@@ -2,15 +2,17 @@
 
 var gCanvas;
 var gCtx;
-var gDraggedLine
 
-var gExternalImg
+var gExternalImg // todo still not working right with external upload
+// for the drag and drop accuracy
 var gClickOffset = {}
+var gDraggedLine
 
 function onInit() {
     gCanvas = document.querySelector('#my-canvas');
+    resizeCanvas()
     document.querySelector('.meme-editor').style.display = 'none'
-    // resizeCanvas()
+    document.querySelector('.saved-memes-container').style.display = 'none';
     gCtx = gCanvas.getContext('2d');
     gCtx.fillStyle = 'lightblue'
     gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height)
@@ -18,10 +20,10 @@ function onInit() {
     const elFontColorPicker = document.querySelector('.font-color-picker')
     elLineColorPicker.addEventListener("change", onSetLineColor);
     elFontColorPicker.addEventListener("change", onSetFontColor);
-    document.querySelector('.stroke-color').style.boxShadow="inset 0px 0px 5px 5px black";
+    document.querySelector('.stroke-color').style.boxShadow = "inset 0px 0px 5px 5px black";
     renderFirstKeywords()
     loadSavedMemesList()
-    renderSavedMemesList()
+    renderStoredMemes()
     renderGallery()
     fillCanvas()
 }
@@ -31,17 +33,25 @@ function fillCanvas() { // Assigning default img to the meme editor
     setMeme('internal', 1, elImg)
     clearCanvas()
     resetMeme()
-    setTimeout(function () { renderMeme(); }, 200);
+    setTimeout(function () { renderMeme(); }, 500);
 }
 
-// function resizeCanvas() {
-//     var elContainer = document.querySelector('.canvas-container');
-//     gCanvas.width = elContainer.offsetWidth
-//     gCanvas.height = elContainer.offsetHeight
-// }
+function resizeCanvas(apsectRatio = 1) {
+    var elContainer = document.querySelector('.canvas-container');
+    gCanvas.width = elContainer.offsetWidth * apsectRatio
+    gCanvas.height = elContainer.offsetHeight * apsectRatio
+}
 
+
+
+function resizeCanvasForAspectRatio(apsectRatio = 1) {
+    gCanvas.height = gCanvas.width / apsectRatio
+    document.querySelector('.canvas-container').style.height = gCanvas.width / apsectRatio + 'px'
+}
 
 function onSelectImg(elImg, imgId) {
+    const apsectRatio = elImg.width / elImg.height
+    resizeCanvasForAspectRatio(apsectRatio)
     document.querySelector('.meme-editor').style.display = 'flex'
     document.querySelector('.images-container').hidden = true;
     document.querySelector('.main-nav .gallery-link').classList.remove('active');
@@ -53,8 +63,6 @@ function onSelectImg(elImg, imgId) {
     renderFirstKeywords()
     renderMeme()
 }
-
-
 
 function renderMeme(forExternalUse = false) {
     const meme = getMeme()
@@ -71,7 +79,6 @@ function renderMeme(forExternalUse = false) {
         if (!forExternalUse) drawTextBox(line, markedLine)
         drawText(line)
     });
-    // document.querySelector('.delete-button-content').hidden = true
 }
 
 function drawTextBox(line, markedLine) {
@@ -80,7 +87,7 @@ function drawTextBox(line, markedLine) {
     document.querySelector('.input-line').value = line.text;
     gCtx.beginPath()
     gCtx.lineWidth = '2'
-    gCtx.rect(-1, line.yLoc, gCanvas.width+1 , line.fontSize * 1.2)
+    gCtx.rect(-5, line.yLoc, gCanvas.width + 5, line.fontSize * 1.2)
     gCtx.stroke()
     gCtx.closePath()
 }
@@ -94,7 +101,6 @@ function drawText(line, markedLine) {
     else {
         gCtx.strokeStyle = 'white'
     }
-    // debugger
     const startX = line.xLoc
     const height = line.yLoc + line.fontSize
     const text = line.text
@@ -109,8 +115,8 @@ function drawText(line, markedLine) {
     gCtx.textAlign = alignType
     line.textWidth = gCtx.measureText(text).width
 
-    gCtx.fillText(text.toUpperCase(), startX, height)
-    gCtx.strokeText(text.toUpperCase(), startX, height)
+    gCtx.fillText(text, startX, height)
+    gCtx.strokeText(text, startX, height)
 
 }
 
@@ -118,14 +124,14 @@ function renderGallery() {
     const images = getImages()
     var strHtmls
     if (images.length === 0) {
-        strHtmls='<img style="margin:auto; width:300px;margin:15px" src="../img/no_images.png">'
+        strHtmls = '<img style="margin:auto; width:300px;margin:15px" src="../img/no_images.png">'
+        document.querySelector('.images-content').innerHTML = strHtmls
     }
     else {
         strHtmls = images.map(getImgHTML)
         document.querySelector('.images-content').innerHTML = strHtmls.join('')
 
     }
-    document.querySelector('.images-content').innerHTML = strHtmls
 }
 
 function getImgHTML(image, idx) {
@@ -156,17 +162,17 @@ function onChangeAlignment(alignType) {
 
 function onAddLine() {
     addLine()
-    const meme=getMeme()
-    if (meme.lines.length > 0) document.querySelector('.input-line').disabled=false
+    const meme = getMeme()
+    if (meme.lines.length > 0) document.querySelector('.input-line').disabled = false
     renderMeme()
 }
 
 function onRemoveLine() {
     removeLine()
-    const meme=getMeme()
+    const meme = getMeme()
     if (meme.lines.length === 0) {
-        document.querySelector('.input-line').disabled=true
-        document.querySelector('.input-line').value="Need to add a line..."
+        document.querySelector('.input-line').disabled = true
+        document.querySelector('.input-line').value = "Need to add a line..."
     }
     renderMeme()
 }
@@ -176,9 +182,9 @@ function onSwitchLine() {
     document.querySelector('.input-line').value = activeLine.text;
     document.querySelector('.font-selector').value = activeLine.fontFamily;
     document.querySelector('.font-color').value = activeLine.fontColor;
-    document.querySelector('.font-color').style.boxShadow="inset 0px 0px 5px 5px "+activeLine.fontColor
+    document.querySelector('.font-color').style.boxShadow = "inset 0px 0px 5px 5px " + activeLine.fontColor
     document.querySelector('.stroke-color').value = activeLine.strokeColor;
-    document.querySelector('.stroke-color').style.boxShadow="inset 0px 0px 5px 5px "+activeLine.strokeColor
+    document.querySelector('.stroke-color').style.boxShadow = "inset 0px 0px 5px 5px " + activeLine.strokeColor
 
     renderMeme()
 }
@@ -190,14 +196,14 @@ function onChangeFont(elFontSelector) {
 }
 
 function onSetLineColor(ev) {
-    document.querySelector('.stroke-color').style.boxShadow="inset 0px 0px 5px 5px "+ev.target.value
+    document.querySelector('.stroke-color').style.boxShadow = "inset 0px 0px 5px 5px " + ev.target.value
     setLineColor(ev.target.value)
     renderMeme()
 }
 
 
 function onSetFontColor(ev) {
-    document.querySelector('.font-color').style.boxShadow="inset 0px 0px 5px 5px "+ev.target.value
+    document.querySelector('.font-color').style.boxShadow = "inset 0px 0px 5px 5px " + ev.target.value
     setFontColor(ev.target.value)
     renderMeme()
 }
@@ -227,7 +233,7 @@ function onSearchGallery(elInput) {
 function renderKeywords() {
     const keywords = getKeywords()
     const sumKeywords = sumObjectMap(keywords)
-    let strHTML = '<ul class="clean-list flex align-center justify-content">'
+    let strHTML = '<ul class="clean-list flex align-center justify-content wrap">'
     for (let [key, value] of Object.entries(keywords)) {
         strHTML += `<li onclick="onFilterGallery(this)" style="font-size:${(value / sumKeywords) * 100}%">${key}</li>`
     }
@@ -273,7 +279,7 @@ function onFilterGallery(elKeyword) {
 function onSaveMeme() {
 
     document.querySelector('.meme-editor').style.display = 'none'
-    document.querySelector('.saved-memes-container').hidden = false;
+    document.querySelector('.saved-memes-container').style.display = 'block';
     document.querySelector('.main-nav .editor-link').classList.remove('active');
     document.querySelector('.main-nav .saved-memes-link').classList.add('active');
 
@@ -290,40 +296,37 @@ function onSaveMeme() {
         var memeId = meme.memeId
         isOverwrite = true
     }
-    // console.log(gExternalImg)
     gMeme.origImgURL11 = gExternalImg
     const memeData = { memeId: memeId, imgURL: dataURL }
     saveMeme(memeData, isOverwrite)
-    renderSavedMemesList()
+    renderStoredMemes()
     renderDeleteButton(memeId)
 }
 
-function renderSavedMemesList() {
+function renderStoredMemes() {
     const memes = loadFromStorage('MEME_LIST')
-    var strHTML
-    if (memes.length === 0) {
-        strHTML='<img style="margin:auto" src="../img/no_images.png">'
+    var strHTML = ''
+    if (!memes || memes.length === 0) {
+        strHTML = '<img style="margin:auto" src="../img/no_images.png">'
     }
     else {
-        strHTML = '<ul class="memes-list clean-list flex wrap align-center justify-content">'
         memes.forEach(meme => {
             const memeData = loadFromStorage(meme)
-            strHTML += `<li><img onclick="onShowMeme('${memeData.memeId}')" src="${memeData.imgURL}"></li>`
+            strHTML += `<img onclick="onShowMeme(this,'${memeData.memeId}')" src="${memeData.imgURL}">`
+
         })
-        strHTML += '</ul>'
     }
-    document.querySelector('.saved-memes-content').innerHTML = strHTML
+    document.querySelector('.images-content-meme').innerHTML = strHTML
 }
 
-function onShowMeme(memeId) {
-    // debugger
+function onShowMeme(elImg,memeId) {
+    const apsectRatio = elImg.width / elImg.height
+    resizeCanvasForAspectRatio(apsectRatio)
     document.querySelector('.meme-editor').style.display = 'flex'
-    document.querySelector('.saved-memes-container').hidden = true;
+    document.querySelector('.saved-memes-container').style.display = 'none';
     document.querySelector('.main-nav .saved-memes-link').classList.remove('active');
     document.querySelector('.main-nav .editor-link').classList.add('active');
 
-
-    // debugger
     const memeFromStorage = loadFromStorage(memeId)
     const meme = memeFromStorage.meme
     if (meme.fileType === 'internal') {
@@ -331,14 +334,11 @@ function onShowMeme(memeId) {
         var elImg = document.querySelector(`[data-img-id="${imgID}"]`)
         meme.elImg = elImg
     } else {
-        // console.log(gImg)
-        // console.log(meme.elImg)
+
         var image = new Image();
         image.src = memeFromStorage.imgURL
         meme.elImg = image
     }
-    // console.log('my meme:',meme)
-
     setMemeFromSavedList(meme, memeId)
     clearCanvas()
     renderMeme()
@@ -348,8 +348,7 @@ function onShowMeme(memeId) {
 }
 
 function renderDeleteButton(elLiMemeName) {
-
-    const strHTML = `<div class="control-panel-btn" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme">Delete</div>`
+    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="../img/trash.png"</div>`
     document.querySelector('.delete-button-content').innerHTML = strHTML
 
 }
@@ -360,20 +359,19 @@ function onDeleteMeme(memeId) {
 }
 
 function onConfirmDelete(memeId) {
-
     document.querySelector('.meme-editor').style.display = 'none'
-    document.querySelector('.saved-memes-container').hidden = false;
+    document.querySelector('.saved-memes-container').style.display = 'block';
     document.querySelector('.main-nav .editor-link').classList.remove('active');
     document.querySelector('.main-nav .saved-memes-link').classList.add('active');
     document.querySelector('.modal').hidden = true;
     deleteMeme(memeId)
     fillCanvas()
-    renderSavedMemesList()
+    renderStoredMemes()
 }
 
 function renderDeleteModal(memeId) {
     var strHTML = `Are you sure?</div>
-    <div class="control-panel-btn" class= onclick="onConfirmDelete('${memeId}')">Yes, delete</div>
+    <div class="control-panel-btn" onclick="onConfirmDelete('${memeId}')">Yes, delete</div>
     <div class="control-panel-btn" onclick="closeModal()">Cancel</div>`
     document.querySelector('.modal-content').innerHTML = strHTML
 }
@@ -381,8 +379,6 @@ function renderDeleteModal(memeId) {
 function closeModal() {
     document.querySelector('.modal').hidden = true;
 }
-
-
 
 function onResetMeme() {
     renderConfirmResetModal()
@@ -431,7 +427,6 @@ function isOnText(x, y) {
 function onMouseDown(ev) {
     const line = isOnText(ev.offsetX, ev.offsetY)
     if (!line) return
-    //switch context
     gClickOffset.x = ev.offsetX - line.xLoc
     gClickOffset.y = ev.offsetY - line.yLoc
 
@@ -460,15 +455,12 @@ function onMouseMove(ev) {
         onMouseUp()
 }
 
-
-
 function onTouchStart(ev) {
     ev.preventDefault()
     const x = ev.touches[0].clientX - ev.touches[0].target.offsetLeft
     const y = ev.touches[0].clientY - ev.touches[0].target.offsetTop
     const line = isOnText(x, y)
     if (!line) return
-    //switch context
     gClickOffset.x = x - line.xLoc
     gClickOffset.y = y - line.yLoc
 
@@ -534,43 +526,38 @@ function loadImageFromInput(ev, onImageReady) {
     reader.readAsDataURL(ev.target.files[0]);
 }
 
-
 function toggleMenu(elLink) {
     handleLinks(elLink)
     switch (elLink.innerText) {
         case 'Gallery':
-            document.querySelector('.saved-memes-container').hidden = true
+            document.querySelector('.saved-memes-container').style.display = 'none';
             document.querySelector('.images-container').hidden = false
             document.querySelector('.meme-editor').style.display = 'none'
             break
         case 'Editor':
-            document.querySelector('.saved-memes-container').hidden = true
+            document.querySelector('.saved-memes-container').style.display = 'none';
             document.querySelector('.images-container').hidden = true
             document.querySelector('.meme-editor').style.display = 'flex'
-            document.querySelector('.about-content').hidden = true
             break
         case 'Saved Memes':
-            renderSavedMemesList()
-            document.querySelector('.saved-memes-container').hidden = false
+            renderStoredMemes()
+            document.querySelector('.saved-memes-container').style.display = 'block';
             document.querySelector('.images-container').hidden = true
             document.querySelector('.meme-editor').style.display = 'none'
-            document.querySelector('.about-content').hidden = true
             break
         case 'About':
-            document.querySelector('.saved-memes-container').hidden = true
+            document.querySelector('.saved-memes-container').style.display = 'none';
             document.querySelector('.images-container').hidden = false
             document.querySelector('.meme-editor').style.display = 'none'
-            document.querySelector('.about-content').hidden = false
     }
+    if (window.innerWidth < 740) toggleHamburger()
 }
-
 
 function handleLinks(elLink) {
-    const links = document.querySelectorAll('.main-nav li a')
+    const links = document.querySelectorAll('.main-nav li')
     links.forEach(link => link.classList.remove('active'))
-    elLink.classList.add('active')
+    elLink.parentNode.classList.add('active')
 }
-
 
 function onOpenStrokePallete() {
     document.querySelector(".line-color-picker").focus();
@@ -582,4 +569,8 @@ function onOpenFontColorPallete() {
     document.querySelector(".font-color-picker").focus();
     document.querySelector(".font-color-picker").value = "#FFCC00";
     document.querySelector(".font-color-picker").click();
+}
+
+function toggleHamburger() {
+    document.body.classList.toggle('menu-open')
 }
