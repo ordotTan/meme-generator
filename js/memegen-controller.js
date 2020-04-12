@@ -3,19 +3,16 @@
 var gCanvas;
 var gCtx;
 
-var gExternalImg // todo still not working right with external upload
 // for the drag and drop accuracy
 var gClickOffset = {}
 var gDraggedLine
 
 function onInit() {
     gCanvas = document.querySelector('#my-canvas');
-    resizeCanvas()
+    resizeCanvas() //to open correctly for desktop v.s mobile
     document.querySelector('.meme-editor').style.display = 'none'
     document.querySelector('.saved-memes-container').style.display = 'none';
     gCtx = gCanvas.getContext('2d');
-    gCtx.fillStyle = 'lightblue'
-    gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height)
     const elLineColorPicker = document.querySelector('.line-color-picker')
     const elFontColorPicker = document.querySelector('.font-color-picker')
     elLineColorPicker.addEventListener("change", onSetLineColor);
@@ -42,7 +39,7 @@ function resizeCanvas(apsectRatio = 1) { //to switch between mobile and desktop 
     gCanvas.height = elContainer.offsetHeight * apsectRatio
 }
 
-function resizeCanvasForAspectRatio(apsectRatio = 1) {
+function resizeCanvasForAspectRatio(apsectRatio = 1) { //support various aspect-ratio imgage
     gCanvas.height = gCanvas.width / apsectRatio
     document.querySelector('.canvas-container').style.height = gCanvas.width / apsectRatio + 'px'
 }
@@ -56,7 +53,7 @@ function onSelectImg(elImg, imgId) {
     document.querySelector('.main-nav .editor-link').classList.add('active');
     setMeme('internal', imgId, elImg)
     clearCanvas()
-    resetMeme()
+    resetMeme() //Assing the img with 2 default lines
     updateKeywordCount(imgId)
     renderFirstKeywords()
     renderMeme()
@@ -68,8 +65,7 @@ function renderMeme(forExternalUse = false) {
     if (meme.fileType === 'internal') {
         gCtx.drawImage(meme.elImg, 0, 0, gCanvas.width, gCanvas.height);
     }
-    else {
-        // console.log('before:',meme.elImg) //todo  for the upload from external..
+    else { //todo for the upload from external leftover
         gCtx.drawImage(meme.elImg, 0, 0, gCanvas.width, gCanvas.height);
     }
     const markedLine = meme.selectedLineIdx
@@ -89,7 +85,6 @@ function drawTextBox(line, markedLine) {
     gCtx.stroke()
     gCtx.closePath()
 }
-
 
 function drawText(line, markedLine) {
     if (line.index === markedLine) {
@@ -141,11 +136,10 @@ function clearCanvas() {
     gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height)
 }
 
-function onUpdateLine(elText) {
+function onUpdateText(elText) {
     updateMemeLineText(elText.value)
     renderMeme()
 }
-
 
 function onChangeFontSize(sizeDelta) {
     updateLineFontSize(sizeDelta)
@@ -156,7 +150,6 @@ function onChangeAlignment(alignType) {
     updateLineAlignment(alignType)
     renderMeme()
 }
-
 
 function onAddLine() {
     addLine()
@@ -169,6 +162,7 @@ function onRemoveLine() {
     removeLine()
     const meme = getMeme()
     if (meme.lines.length === 0) {
+        //todo disable all control panel when there are 0 lines
         document.querySelector('.input-line').disabled = true
         document.querySelector('.input-line').value = "Need to add a line..."
     }
@@ -183,7 +177,6 @@ function onSwitchLine() {
     document.querySelector('.font-color').style.boxShadow = "inset 0px 0px 5px 5px " + activeLine.fontColor
     document.querySelector('.stroke-color').value = activeLine.strokeColor;
     document.querySelector('.stroke-color').style.boxShadow = "inset 0px 0px 5px 5px " + activeLine.strokeColor
-
     renderMeme()
 }
 
@@ -215,19 +208,13 @@ function onDownloadCanvas(elLink) {
     renderMeme()
 }
 
-
-function onMoveLine(delta) {
-    setLineHeight(delta)
-    renderMeme()
-}
-
-
 function onSearchGallery(elInput) {
     document.querySelector('.images-content').innerHTML = '';
     setSearchText(elInput.value)
     renderGallery()
 }
 
+//render all keywords, after "more" is clicked
 function renderKeywords() {
     const keywords = getKeywords()
     const sumKeywords = sumObjectMap(keywords)
@@ -239,8 +226,7 @@ function renderKeywords() {
     document.querySelector('.keywords-content').innerHTML = strHTML
 }
 
-
-function renderFirstKeywords() {
+function renderFirstKeywords() { // Render first 3 keywords, with "more...""
     const keywords = getKeywords()
     const sumKeywords = sumObjectMap(keywords)
     const values = Object.values(keywords)
@@ -275,30 +261,25 @@ function onFilterGallery(elKeyword) {
 
 
 function onSaveMeme() {
-
     document.querySelector('.meme-editor').style.display = 'none'
     document.querySelector('.saved-memes-container').style.display = 'block';
     document.querySelector('.main-nav .editor-link').classList.remove('active');
     document.querySelector('.main-nav .saved-memes-link').classList.add('active');
-
-
     var isOverwrite = false
+    renderMeme(true) // render without the text-boxes before saving
     const meme = getMeme()
-    //const origImgURL = meme.originalImgURL
     var dataURL = gCanvas.toDataURL();
     if (!meme.memeId) {
         var memeId = makeId(6)
     }
-    else {
+    else { //replacing existing saved meem
         const meme = getMeme()
         var memeId = meme.memeId
         isOverwrite = true
     }
-    gMeme.origImgURL11 = gExternalImg
     const memeData = { memeId: memeId, imgURL: dataURL }
     saveMeme(memeData, isOverwrite)
     renderStoredMemes()
-    renderDeleteButton(memeId)
 }
 
 function renderStoredMemes() {
@@ -331,8 +312,7 @@ function onShowMeme(elImg,memeId) {
         const imgID = meme.selectedImgID
         var elImg = document.querySelector(`[data-img-id="${imgID}"]`)
         meme.elImg = elImg
-    } else {
-
+    } else { // From external File
         var image = new Image();
         image.src = memeFromStorage.imgURL
         meme.elImg = image
@@ -342,7 +322,6 @@ function onShowMeme(elImg,memeId) {
     renderMeme()
     renderDeleteButton(memeId)
     document.querySelector('.delete-button-content').hidden = false
-
 }
 
 function renderDeleteButton(elLiMemeName) {
@@ -423,7 +402,6 @@ function isOnText(x, y) {
 }
 
 function onMouseDown(ev) {
-    // console.log(ev)
     const line = isOnText(ev.offsetX, ev.offsetY)
     if (!line) return
     gClickOffset.x = ev.offsetX - line.xLoc
@@ -498,7 +476,6 @@ function renderImgFromFile(img) {
     clearCanvas()
     gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
     setMeme('external', 999, img)
-    gExternalImg = img // todo - still not working... hold current external img URL
     resetMeme()
     const meme = getMeme()
     const lines = meme.lines
@@ -553,7 +530,7 @@ function toggleMenu(elLink) {
     if (window.innerWidth < 740) toggleHamburger()
 }
 
-function handleLinks(elLink) {
+function handleLinks(elLink) { // to set the correct "active" class on the clicked item
     const links = document.querySelectorAll('.main-nav li')
     links.forEach(link => link.classList.remove('active'))
     elLink.parentNode.classList.add('active')

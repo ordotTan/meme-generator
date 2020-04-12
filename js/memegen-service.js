@@ -6,7 +6,6 @@ var gKeywords = {
     'animal': 3,
     'matrix': 4,
 }
-
 var gSavedMemes = []
 
 var gSearchText = ''
@@ -58,7 +57,7 @@ function setMeme(fileType,imgId,elImg) {
     gMeme.elImg = elImg
     gMeme.selectedImgID = imgId
     gMeme.selectedLineIdx = 0
-    // if (fileType==='external') gMeme.origImgURL = elImg
+    gMeme.memeId = ''
 }
 
 function setMemeFromSavedList(meme,memeId) {
@@ -69,8 +68,6 @@ function setMemeFromSavedList(meme,memeId) {
 function getMeme() {
     return gMeme
 }
-
-
 
 function getFontSize() {
     return gMeme.lines[gMeme.selectedLineIdx].fontSize
@@ -163,10 +160,6 @@ function setLineColor(color) {
 
 function setFontColor(color) {
     gMeme.lines[gMeme.selectedLineIdx].fontColor = color
-}
-
-function setLineHeight(delta) {
-    gMeme.lines[gMeme.selectedLineIdx].yLoc += delta
 }
 
 function updateKeywordCount(imgId) {
