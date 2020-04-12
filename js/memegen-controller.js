@@ -348,7 +348,7 @@ function onShowMeme(elImg,memeId) {
 }
 
 function renderDeleteButton(elLiMemeName) {
-    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="../img/trash.png"</div>`
+    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="img/trash.png"</div>`
     document.querySelector('.delete-button-content').innerHTML = strHTML
 
 }
