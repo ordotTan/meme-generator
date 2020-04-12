@@ -36,13 +36,11 @@ function fillCanvas() { // Assigning default img to the meme editor
     setTimeout(function () { renderMeme(); }, 500);
 }
 
-function resizeCanvas(apsectRatio = 1) {
+function resizeCanvas(apsectRatio = 1) { //to switch between mobile and desktop versions
     var elContainer = document.querySelector('.canvas-container');
     gCanvas.width = elContainer.offsetWidth * apsectRatio
     gCanvas.height = elContainer.offsetHeight * apsectRatio
 }
-
-
 
 function resizeCanvasForAspectRatio(apsectRatio = 1) {
     gCanvas.height = gCanvas.width / apsectRatio
@@ -124,7 +122,7 @@ function renderGallery() {
     const images = getImages()
     var strHtmls
     if (images.length === 0) {
-        strHtmls = '<img style="margin:auto; width:300px;margin:15px" src="img/no_images.png">'
+        strHtmls = '<img style="margin:auto; width:300px;margin:15px" src="../img/no_images.png">'
         document.querySelector('.images-content').innerHTML = strHtmls
     }
     else {
@@ -307,7 +305,7 @@ function renderStoredMemes() {
     const memes = loadFromStorage('MEME_LIST')
     var strHTML = ''
     if (!memes || memes.length === 0) {
-        strHTML = '<img style="margin:auto" src="img/no_images.png">'
+        strHTML = '<img style="margin:auto" src="../img/no_images.png">'
     }
     else {
         memes.forEach(meme => {
@@ -348,7 +346,7 @@ function onShowMeme(elImg,memeId) {
 }
 
 function renderDeleteButton(elLiMemeName) {
-    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="img/trash.png"</div>`
+    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="../img/trash.png"</div>`
     document.querySelector('.delete-button-content').innerHTML = strHTML
 
 }
@@ -425,12 +423,13 @@ function isOnText(x, y) {
 }
 
 function onMouseDown(ev) {
+    // console.log(ev)
     const line = isOnText(ev.offsetX, ev.offsetY)
     if (!line) return
     gClickOffset.x = ev.offsetX - line.xLoc
     gClickOffset.y = ev.offsetY - line.yLoc
-
     gMeme.selectedLineIdx = line.index
+    renderMeme() // to mark the selected text box
     document.querySelector('.input-line').value = line.text;
     document.querySelector('.font-selector').value = line.fontFamily
 
@@ -465,6 +464,7 @@ function onTouchStart(ev) {
     gClickOffset.y = y - line.yLoc
 
     gMeme.selectedLineIdx = line.index
+    renderMeme() // to mark the selected text box
     document.querySelector('.input-line').value = line.text;
     document.querySelector('.font-selector').value = line.fontFamily
 
@@ -493,9 +493,9 @@ function renderImgFromFile(img) {
     document.querySelector('.images-container').hidden = true;
     document.querySelector('.main-nav .gallery-link').classList.remove('active');
     document.querySelector('.main-nav .editor-link').classList.add('active');
+    const apsectRatio = img.width / img.height
+    resizeCanvasForAspectRatio(apsectRatio)
     clearCanvas()
-    gCanvas.width = img.width;
-    gCanvas.height = img.height;
     gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
     setMeme('external', 999, img)
     gExternalImg = img // todo - still not working... hold current external img URL
