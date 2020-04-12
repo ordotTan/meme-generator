@@ -117,7 +117,7 @@ function renderGallery() {
     const images = getImages()
     var strHtmls
     if (images.length === 0) {
-        strHtmls = '<img style="margin:auto; width:300px;margin:15px" src="../img/no_images.png">'
+        strHtmls = '<img style="margin:auto; width:300px;margin:15px" src="img/no_images.png">'
         document.querySelector('.images-content').innerHTML = strHtmls
     }
     else {
@@ -286,7 +286,7 @@ function renderStoredMemes() {
     const memes = loadFromStorage('MEME_LIST')
     var strHTML = ''
     if (!memes || memes.length === 0) {
-        strHTML = '<img style="margin:auto" src="../img/no_images.png">'
+        strHTML = '<img style="margin:auto" src="img/no_images.png">'
     }
     else {
         memes.forEach(meme => {
@@ -325,7 +325,7 @@ function onShowMeme(elImg,memeId) {
 }
 
 function renderDeleteButton(elLiMemeName) {
-    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="../img/trash.png"</div>`
+    const strHTML = `<div class="icon-holder" onclick="onDeleteMeme('${elLiMemeName}')" title="Delete Meme"><img class="icon" src="img/trash.png"</div>`
     document.querySelector('.delete-button-content').innerHTML = strHTML
 
 }
