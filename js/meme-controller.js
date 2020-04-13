@@ -42,7 +42,6 @@ function onSelectImg(elImg, imgId) {
     updateKeywordCount(imgId)
     renderFirstKeywords()
     renderMeme()
-    document.querySelector('.input-line').select()
 }
 
 function renderMeme(forExternalUse = false) {
@@ -134,7 +133,6 @@ function onAddLine() {
         document.querySelector('.font-selector').disabled = false
     }
     renderMeme()
-    elInputBox.select()
 }
 
 function onRemoveLine() {
@@ -158,7 +156,6 @@ function onSwitchLine() {
     const activeLine = switchLine()
     const elInputBox = document.querySelector('.input-line');
     elInputBox.value = activeLine.text;
-    elInputBox.select()
     document.querySelector('.font-selector').value = activeLine.fontFamily;
     document.querySelector('.font-color').value = activeLine.fontColor;
     document.querySelector('.font-color').style.boxShadow = "inset 0px 0px 5px 5px " + activeLine.fontColor
@@ -385,7 +382,6 @@ function onTouchStart(ev) {
     meme.selectedLineIdx = line.index
     renderMeme() // to mark the selected text box
     document.querySelector('.input-line').value = line.text;
-    document.querySelector('.input-line').select()
     document.querySelector('.font-selector').value = line.fontFamily
 
     meme.lines[gMeme.selectedLineIdx] = line
