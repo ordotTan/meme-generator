@@ -16,6 +16,7 @@ function onInit() {
     renderStoredMemes()
     renderGallery()
     fillCanvas()
+    doubleTapEdit()
 }
 
 

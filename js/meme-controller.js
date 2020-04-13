@@ -92,6 +92,9 @@ function drawText(line, markedLine) {
     gCtx.font = fontSize + 'px ' + fontFamily
     gCtx.textAlign = alignType
     line.textWidth = gCtx.measureText(text).width
+    //console.log(document.querySelector('.inline-input').style.width )
+    //document.querySelector('.inline-input').width = line.textWidth+'px'
+    
 
     gCtx.fillText(text, startX, height)
     gCtx.strokeText(text, startX, height)
@@ -462,35 +465,55 @@ function onOpenFontColorPallete() {
 }
 
 
-function onInlineEdit(ev) {
+
+function doubleTapEdit() {
+    var hammertime = new Hammer(gCanvas);
+    hammertime.on('doubletap', function (ev) {
+        onInlineEditTouch(ev)
+    })
 }
 
-function onInlineEditTemp(ev) {
-    const line = isOnText(ev.offsetX, ev.offsetY)
+//Todo - sort out the  double tap/click inline...
+
+function onInlineEditTouch(ev) {
+    const x = ev.srcEvent.offsetX 
+    const y = ev.srcEvent.offsetY
+    const line = isOnText(x, y)
     if (!line) return
     const elInLineInputBox = document.querySelector('.inline-input');
     const elInlineInput = document.querySelector('.inline-input input');
-    // console.log(ev.offsetX)
-    // console.log(ev.offsetY)
 
-    elInLineInputBox.style.left = line.xLoc + 'px'
-    elInLineInputBox.style.top = line.yLoc + 'px'// - .height + `px`;
+    elInLineInputBox.style.left = x-gCanvas.width/3 + 'px'
+    elInLineInputBox.style.top = line.yLoc+line.fontSize+43+ 'px'
     elInLineInputBox.style.display = 'block';
-    elInLineInputBox.style.width = gCanvas.width + 'px'
+    elInLineInputBox.style.width = gCanvas.width+ 'px'
 
-    console.log(elInlineInput)
     elInlineInput.value = line.text
     elInlineInput.style.fontSize = line.fontSize + 'px';
     elInlineInput.style.font = line.font
     elInlineInput.focus()
     elInlineInput.select()
+}
 
-    // elInLineInput.style.height = line.height + 20 + `px`;
+function onInlineEdit(ev) {
+    const line = isOnText(ev.offsetX, ev.offsetY)
+    if (!line) return
+    const elInLineInputBox = document.querySelector('.inline-input');
+    const elInlineInput = document.querySelector('.inline-input input');
 
+    elInLineInputBox.style.left = ev.screenX-ev.clientX -19 + 'px'
+    elInLineInputBox.style.top = line.yLoc+line.fontSize+65+ 'px'
+    elInLineInputBox.style.display = 'block';
+    elInLineInputBox.style.width = gCanvas.width+ 'px'
 
+    elInlineInput.value = line.text
+    elInlineInput.style.fontSize = line.fontSize + 'px';
+    elInlineInput.style.font = line.font
+    elInlineInput.focus()
+    elInlineInput.select()
 }
 
 function onFinishInline() {
-    // const elInLineInputBox = document.querySelector('.inline-input');
-    // elInLineInputBox.style.display = 'none';
+    const elInLineInputBox = document.querySelector('.inline-input');
+    elInLineInputBox.style.display = 'none';
 }
