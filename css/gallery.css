@@ -1,0 +1,102 @@
+.images-gallery {
+   background-color: #e3e3e3;
+   ;
+}
+
+.images-gallery img {
+   margin-bottom: 10px;
+   margin-top: 10px;
+   width: 100%;
+   object-fit: cover;
+   border: 1px solid black;
+   border-radius: 10px;
+   cursor: pointer;
+   transition: 0.3s;
+}
+
+.images-gallery img:hover {
+   box-shadow: 2px 2px 15px 9px rgb(253, 126, 0)
+}
+
+.images-content {
+   padding-top: 10px;
+   column-count: 4;
+   text-align: center;
+   width: 95%;
+   margin-bottom: 15px;
+}
+
+/* Search/Filter Panel */
+
+.search-bar {
+   background-color: white;
+   padding: 20px;
+}
+
+.search-input {
+   width: 9.5rem;
+   border-top: none;
+   border-left: none;
+   border-right: none;
+   border-bottom: 3px solid black;
+   font-size: 1rem;
+   text-align: center;
+}
+
+.search-area .icon {
+   cursor: default;
+   width: 20px;
+   height: 20px;
+}
+
+.keywords-content ul {
+   max-width: 1000px
+}
+
+.keywords-content li {
+   margin-right: 10px;
+   cursor: pointer;
+   border: none;
+   color: #ff7f00;
+}
+
+.keywords-content li:hover {
+   color: black;
+}
+
+.keywords-content li.selected {
+   color: black;
+}
+
+.keywords-content li span:hover {
+   color: black;
+   ;
+}
+
+.file-input {
+   width: 0.1px;
+   height: 0.1px;
+   opacity: 0;
+   overflow: hidden;
+   position: absolute;
+   z-index: -1;
+}
+
+.file-input+label {
+   cursor: pointer;
+   align-self: center;
+   font-size: 1rem;
+   color: black;
+   display: inline-block;
+}
+
+.file-input:focus+label, .file-input+label:hover {
+   color: #ff7f00;
+}
+
+img.file-upload-icon {
+   height: 30px;
+   width: 30px;
+   cursor: default;
+   align-self: center;
+}

@@ -11,22 +11,21 @@
 </head>
 
 <body onload="onInit()">
-    <section class="screen" onclick="toggleHamburger()"></section>
+    <section class="screen" onclick="onToggleHamburger()"></section>
     <a id="top"></a>
     <header class="main-header container">
-        <div class="flex align-center space-between">
+        <nav class="flex align-center space-between">
             <div class="logo">
                 <img src="img/LOGO.png">
             </div>
             <ul class="main-nav clean-list flex">
-                <li class="flex gallery-link active"><a class="" onclick="toggleMenu(this)" href="#">Gallery</a></li>
-                <li class="flex editor-link"><a class="" onclick="toggleMenu(this)" href="#">Editor</a></li>
-                <li class="flex saved-memes-link"><a class="" onclick="toggleMenu(this)" href="#">Saved Memes</a></li>
-                <li class="flex about-link"><a class="" onclick="toggleMenu(this)" href="#about">About</a></li>
-                </li>
+                <li class="flex gallery-link active"><a class="" onclick="onNavMenu(this)" href="#">Gallery</a></li>
+                <li class="flex editor-link"><a class="" onclick="onNavMenu(this)" href="#">Editor</a></li>
+                <li class="flex saved-memes-link"><a class="" onclick="onNavMenu(this)" href="#">Saved Memes</a></li>
+                <li class="flex about-link"><a class="" onclick="onNavMenu(this)" href="#about">About</a></li>
             </ul>
-            <button onclick="toggleHamburger()" class="btn-menu"></button>
-        </div>
+            <button onclick="onToggleHamburger()" class="btn-menu"></button>
+        </nav>
     </header>
 
     <main class="images-container container">
@@ -50,10 +49,12 @@
             </div>
         </section>
 
+        <!-- Gallery items go here  -->
         <section class="images-gallery">
             <div class="images-content container"></div>
         </section>
 
+        <!-- About section -->
         <a id="about"></a>
         <section class="about-content flex column align-center container">
             <img src="img/me.png">
@@ -67,22 +68,29 @@
         </section>
     </main>
 
-    <div class="meme-editor container flex">
+     <!-- Meme editor -->
+    <section class="meme-editor container flex">
+
+        <!-- Canvas -->
         <section class="canvas-container">
             <canvas id="my-canvas" height="500" width="500" onclick="" onmousedown="onMouseDown(event)" onmousemove=""
-                onmouseup="" ontouchstart="onTouchStart(event)" ontouchend="" ontouchmove="">
+                onmouseup="" ontouchstart="onTouchStart(event)" ontouchend="" ontouchmove="" ondblclick="onInlineEdit(event)">
             </canvas>
         </section>
 
+         <!-- Contorl panel -->
+         <div class="inline-input">
+            <input type="text" oninput="onUpdateText(this)" onfocusout="onFinishInline()">
+        </div>
         <section class="control-panel grid-container">
-            <div class="input-text"><input class="input-line" type="text" onkeyup="onUpdateText(this)"></input></div>
+            <div class="input-text"><input class="input-line" type="text" oninput="onUpdateText(this)"></input></div>
             <div class="switch-line icon-holder" onclick="onSwitchLine()"> <img class="icon" src="img/switchLine.png"
                     title="Focus Next Line"></div>
             <div class="add-line icon-holder" onclick="onAddLine()"> <img class="icon" src="img/addLine.png"
                     title="Add Line"></div>
             <div class="delete-line icon-holder" onclick="onRemoveLine()"> <img class="icon" src="img/remove_line.png"
                     title="Delete Line"></div>
-            <div class="delete-meme delete-button-content"></div>
+            <div class="delete-meme delete-button-content icon-holder" hidden></div>
             <div class="inc-font icon-holder" onclick="onChangeFontSize(2)"> <img class="icon"
                     src="img/increase_font.png" title="Increase Font Size"></div>
             <div class="dec-font icon-holder" onclick="onChangeFontSize(-2)"><img class="icon"
@@ -110,8 +118,8 @@
                 <img class="icon" src="img/font-color.png" title="Change Font Color">
                 <input class="font-color-picker" type="color" name="fontColor" value="#FFFFFF" hidden>
             </div>
-            <div class="download icon-holder" onclick="onDownloadCanvas(this)" download="">
-                <a href="#" onclick="onDownloadCanvas(this)" download="">
+            <div class="download icon-holder">
+                <a href="#" onclick="onDownloadMeme(this)" download="">
                     <img class="icon" src="img/download.png" title="Download Meme">
                 </a></div>
             <div class="save icon-holder" onclick="onSaveMeme()">
@@ -130,16 +138,17 @@
             </div>
             <div class="share-container"></div>
         </section>
-        <!-- end of grid -->
-    </div>
+        <!-- end of Control panel -->
+    </section>
     <!-- end of editor section -->
-    <div class="container">
-        <section class="saved-memes-container">
-            <h2>Saved Memes</h2>
-            <div class="images-content-meme"></div>
-        </section>
-    </div>
 
+    <!-- Saved memes section -->
+    <section class="saved-memes-container container">
+        <h2>Saved Memes</h2>
+            <div class="images-content-meme container"></div>
+    </section>
+
+    <!-- Footer -->
     <footer class="footer-content container flex column justify-center align-center">
         <div class="logo">
             <a href="#top"><img src="img/LOGO.png"></a>
@@ -158,8 +167,12 @@
     <script src="js/util.js"></script>
     <script src='js/upload-service.js'></script>
     <script src="js/storage-service.js"></script>
-    <script src="js/memegen-controller.js"></script>
-    <script src="js/memegen-service.js"></script>
+    <script src="js/gallery-controller.js"></script>
+    <script src="js/gallery-service.js"></script>
+    <script src="js/meme-controller.js"></script>
+    <script src="js/meme-service.js"></script>
+    <script src="js/gallery-controller.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

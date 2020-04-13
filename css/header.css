@@ -1,0 +1,40 @@
+.main-header {
+    background-color: #ff7f00;
+    width: 100%;
+}
+
+.logo img {
+    margin-left: 47px;
+    width: 133px;
+    height: 25px;
+}
+
+.main-header a {
+    font-size: 19px;
+    text-align: center;
+    color: #ffffff;
+    padding: 22px;
+}
+
+.main-header a:hover {
+    color: black;
+}
+
+.main-nav li {
+    border-left: 1px solid #1e1e1e;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.main-nav li:last-child {
+    border-right: 1px solid #1e1e1e;
+}
+
+.active {
+    box-shadow: inset 0 -4px 0 black;
+}
+
+.btn-menu {
+    display: none;
+}

@@ -1,0 +1,31 @@
+.about-content {
+  padding-top: 50px;
+  background-color: white;
+  border: 1px solid black;
+}
+
+.about-content img {
+  border-radius: 50%;
+  width: 30%;
+}
+
+.links {
+  margin-bottom: 20px;
+}
+
+.links img {
+  height: 30px;
+  width: 30px;
+  border-radius: 0;
+  margin-right: 20px;
+}
+
+.links img:hover {
+  opacity: 0.7;
+}
+
+.about-content h3 {
+  color: #ff7f00;
+  font-size: 2rem;
+  margin-bottom: 0;
+}

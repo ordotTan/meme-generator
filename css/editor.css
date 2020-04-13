@@ -1,0 +1,163 @@
+.meme-editor {
+  background-color: #e3e3e3;
+}
+
+.grid-container {
+  display: grid;
+  margin-left: 30px;
+  margin-right: 20px;
+  align-items: flex-start;
+  /* justify-items: center; */
+  margin-top: 26px;
+  width: 100vw;
+  grid-template-areas: "input-text input-text input-text input-text input-text" ". switch-line add-line delete-line delete-meme" "inc-font dec-font align-left align-center align-right" "font font font stroke-color font-color" "download save reset publish share-container";
+  /* "stickers stickers stickers stickers stickers"; */
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.input-text {
+  grid-area: input-text;
+}
+
+.switch-line {
+  grid-area: switch-line;
+}
+
+.add-line {
+  grid-area: add-line;
+}
+
+.delete-line {
+  grid-area: delete-line;
+}
+
+.delete-meme {
+  grid-area: delete-meme;
+}
+
+.inc-font {
+  grid-area: inc-font;
+}
+
+.dec-font {
+  grid-area: dec-font;
+}
+
+.align-left {
+  grid-area: align-left;
+}
+
+.align-center {
+  grid-area: align-center;
+}
+
+.align-right {
+  grid-area: align-right;
+}
+
+.font {
+  grid-area: font;
+}
+
+.stroke-color {
+  grid-area: stroke-color;
+}
+
+.font-color {
+  grid-area: font-color;
+}
+
+.download {
+  grid-area: download;
+}
+
+.save {
+  grid-area: save;
+}
+
+.reset {
+  grid-area: reset;
+}
+
+.publish {
+  grid-area: publish;
+}
+
+.share-container {
+  grid-area: share-container;
+}
+
+.input-line {
+  background-color: white;
+  border-radius: 15px;
+  border: none;
+  width: 100%;
+  padding: 20px;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.icon {
+  background-color: white;
+  height: 40px;
+  width: 40px;
+}
+
+.icon-holder {
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+  justify-self: center
+}
+
+.icon-holder:hover {
+  opacity: 0.5;
+}
+
+.font-selector {
+  background-color: white;
+  border: none;
+  width: 90%;
+  margin-left: 5%;
+  font-size: 1.5rem;
+  margin-top: 6px;
+  height: 62px;
+}
+
+.modal-btn {
+  padding: 20px;
+  widows: 100%;
+  color: white;
+  background-color: #ff7f00;
+  border-radius: 10px;
+  margin: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.modal-btn:hover {
+  opacity: 0.7;
+}
+
+.inline-input {
+  display: none;
+  position: absolute;
+  height: 40px;
+  width: 500px;
+  left: 0px;
+  top: 0px;
+}
+
+.inline-input input {
+  width: 100%;
+  height: 100%;
+  color: black;
+  /* font-size: 40px; */
+  text-align: center;
+}
